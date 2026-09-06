@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {authService} from "../Services/Auth/authService";
 
 const Login = () => {
@@ -46,7 +46,7 @@ const Login = () => {
 
         <div className="space-y-4">
           <div>
-            <label className="block mb-1">email</label>
+            <label className="block mb-1">Email</label>
 
             <input
               type="text"
@@ -78,6 +78,9 @@ const Login = () => {
           >
             {isLoading ? "Logging in..." : "Login"}
           </button>
+          <div className="text-center">
+            <p>Don't have an account? <Link to="/register">register</Link></p>
+          </div>
         </div>
       </div>
     </div>

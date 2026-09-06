@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { authService } from "../Services/Auth/authService";
 
 const Register = () => {
@@ -100,6 +100,9 @@ const Register = () => {
           >
             {isLoading ? "Registering..." : "Register"}
           </button>
+            <div className="text-center">
+            <p>Already have an account? <Link to="/">login</Link></p>
+          </div>
         </div>
       </div>
     </div>

@@ -99,7 +99,6 @@ namespace RenewalWorker
             }
         }
 
-
         private async Task<bool> ProcessPayment(DueSubscriptionDto subscription)
         {
 
