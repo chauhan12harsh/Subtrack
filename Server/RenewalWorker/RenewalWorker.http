@@ -1,0 +1,6 @@
+@RenewalWorker_HostAddress = http://localhost:5042
+
+GET {{RenewalWorker_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
