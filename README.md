@@ -1,11 +1,11 @@
 # 🚀 SubTrack
 
-> **A full-stack subscription management platform with automated recurring payments, role-based access control, notifications, and a dedicated renewal worker.**
+> **A full-stack subscription management platform for tracking subscriptions, recurring billing, payments, notifications, and role-based access control.**
 
-SubTrack is built with **React + TypeScript** on the frontend and a **multi-service ASP.NET Core backend**. The project demonstrates how independent backend responsibilities can be separated into services while a dedicated background worker coordinates recurring billing.
+SubTrack is a full-stack portfolio project built with **React + TypeScript** on the frontend and a **single ASP.NET Core monolithic backend**. The application brings authentication, user management, subscriptions, payments, and notifications together in one deployable backend while keeping feature responsibilities separated internally.
 
 <p align="center">
-  <img src="https://img.shields.io/badge/.NET-8%2B-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" alt=".NET" />
+  <img src="https://img.shields.io/badge/.NET-10-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" alt=".NET" />
   <img src="https://img.shields.io/badge/ASP.NET_Core-Web_API-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" alt="ASP.NET Core" />
   <img src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React" />
   <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
@@ -16,109 +16,108 @@ SubTrack is built with **React + TypeScript** on the frontend and a **multi-serv
 
 ## ✨ Why SubTrack?
 
-SubTrack goes beyond basic CRUD by combining **authentication, authorization, subscription lifecycle management, payment processing, notifications, and automated background processing** into one working system.
+SubTrack goes beyond basic CRUD by combining **authentication, authorization, subscription lifecycle management, payment processing, notifications, and recurring-billing workflows** into one application.
 
-### What makes it interesting?
+### Key characteristics
 
 - 🔐 **JWT authentication + role-based authorization** for `User`, `Admin`, and `Worker`
-- 🧩 **Four ASP.NET Core API services** with clear responsibilities
-- ⚙️ **Dedicated BackgroundService** for automated recurring renewals
-- 💳 **Internal payment flow** designed specifically for the renewal worker
-- 🔔 **Notification workflow** for successful and failed renewals
-- 🗄️ **Entity Framework Core + SQL Server** with service-specific data contexts
-- 🔄 **Service-to-service HTTP communication** using `IHttpClientFactory`
-- 🧪 **Postman collection** for exploring and testing the APIs
+- 🧩 **Monolithic ASP.NET Core backend** organized by feature responsibility
+- 💳 **Payment processing** for subscription transactions
+- 🔔 **Notification workflow** for subscription and payment outcomes
+- 🗄️ **Entity Framework Core + SQL Server** persistence
+- 🔄 **EF Core migrations** for database schema evolution
+- ⚛️ **React + TypeScript frontend** with dedicated API service modules
+- 🧪 **Postman-based API testing** support
+
+> **Architecture note:** This branch represents the **monolithic architecture**. Authentication, subscriptions, payments, notifications, and worker-oriented operations run inside the same ASP.NET Core application rather than separate deployable services.
 
 ---
 
 ## 🏗️ Architecture
 
-The system consists of a React client, four ASP.NET Core API services, and a dedicated background worker.
+The application has two primary runtime parts: a React client and a single ASP.NET Core backend.
 
 ```mermaid
 flowchart LR
     UI[React + TypeScript Client]
+    API[ASP.NET Core Monolith]
 
-    AUTH[Authentication Service\n:7025]
-    SUB[Subscription Service\n:7081]
-    PAY[Payment Service\n:7070]
-    NOTIF[Notification Service\n:7056]
-    WORKER[Renewal Worker\nBackgroundService]
+    AUTH[Authentication & Users]
+    SUB[Subscriptions]
+    PAY[Payments]
+    NOTIF[Notifications]
+    WORKER[Worker-oriented renewal operations]
+    DB[(SQL Server)]
 
-    UI --> AUTH
-    UI --> SUB
-    UI --> PAY
-    UI --> NOTIF
+    UI --> API
+    API --> AUTH
+    API --> SUB
+    API --> PAY
+    API --> NOTIF
+    API --> WORKER
 
-    WORKER --> AUTH
+    AUTH --> DB
+    SUB --> DB
+    PAY --> DB
+    NOTIF --> DB
     WORKER --> SUB
     WORKER --> PAY
     WORKER --> NOTIF
 ```
 
-### Service responsibilities
+### Internal feature responsibilities
 
-| Component | Port | Responsibility |
-|---|---:|---|
-| **Authentication Service** | `7025` | Registration, login, JWT authentication, profiles, passwords, and user/role administration |
-| **Subscription Service** | `7081` | Subscription CRUD, lifecycle/status management, categories, due-subscription detection, and renewals |
-| **Payment Service** | `7070` | Payment processing, payment lookup, and transaction history |
-| **Notification Service** | `7056` | User notifications, unread counts, read/unread management, and admin notification management |
-| **Renewal Worker** | — | Background orchestration for recurring subscription renewals |
-
-> **Note:** The Renewal Worker is a background orchestration component, not a public HTTP API service.
+| Feature | Responsibility |
+|---|---|
+| **Authentication & Users** | Registration, login, JWT authentication, profiles, passwords, and user/role administration |
+| **Subscriptions** | Subscription CRUD, lifecycle/status management, categories, due-subscription detection, and renewal operations |
+| **Payments** | Payment processing, payment lookup, and transaction history |
+| **Notifications** | User notifications, unread counts, read/unread management, and administrative notification operations |
+| **Worker operations** | Role-protected operations used for recurring renewal workflows; these are part of the same backend process |
 
 ---
 
-## 🔄 Automated Renewal Workflow
+## 🔄 Subscription Renewal Workflow
 
-One of the core features of SubTrack is its automated recurring-payment workflow.
+The monolithic backend contains the endpoints and service logic required for recurring subscription processing. Worker-authorized operations can identify subscriptions due for renewal, process an internal payment, renew the subscription, and create a notification for the outcome.
 
 ```mermaid
 flowchart TD
-    A[Renewal Worker wakes up] --> B[Authenticate with Auth Service]
-    B --> C[Get subscriptions due for renewal]
-    C --> D[Process payment via internal Payment endpoint]
-    D --> E{Payment successful?}
-
-    E -->|No| F[Create failure notification]
-    E -->|Yes| G[Renew subscription]
-    G --> H[Create success notification]
-
-    F --> I[Wait for next 30-second cycle]
-    H --> I
-    I --> A
+    A[Renewal workflow starts] --> B[Find subscriptions due today]
+    B --> C[Process internal payment]
+    C --> D{Payment successful?}
+    D -->|No| E[Create failure notification]
+    D -->|Yes| F[Renew subscription]
+    F --> G[Create success notification]
 ```
 
-The worker is implemented with `BackgroundService` and uses `IHttpClientFactory` for service-to-service HTTP communication. It obtains a JWT, checks for due subscriptions, calls the internal payment endpoint, creates notifications, and renews successfully paid subscriptions.
-
-The worker polls every **30 seconds** and supports graceful cancellation through `CancellationToken`.
+The current branch does **not** contain a separate deployable Renewal Worker service. Worker-specific behavior is exposed through role-protected endpoints inside the monolithic ASP.NET Core application.
 
 ---
 
-## 🔐 Authorization Model
+## 🔐 Authentication & Authorization
 
-SubTrack uses JWT authentication together with role-based authorization.
+SubTrack uses **JWT authentication** together with **role-based authorization**.
 
 ```mermaid
 flowchart LR
-    LOGIN[User Login] --> JWT[JWT Token]
-    JWT --> USER[User Role]
-    JWT --> ADMIN[Admin Role]
-    JWT --> WORKER[Worker Role]
+    LOGIN[Login] --> JWT[JWT Token]
+    JWT --> USER[User]
+    JWT --> ADMIN[Admin]
+    JWT --> WORKER[Worker]
 
-    USER --> USER_API[User-facing operations]
+    USER --> USER_API[User operations]
     ADMIN --> ADMIN_API[Administrative operations]
-    WORKER --> WORKER_API[Internal renewal operations]
+    WORKER --> WORKER_API[Renewal operations]
 ```
 
-### Role examples
+### Roles
 
 | Role | Typical responsibilities |
 |---|---|
 | **User** | Manage profile, subscriptions, payments, and notifications |
 | **Admin** | Manage users/roles and access system-wide administrative data |
-| **Worker** | Execute internal renewal, payment, and notification operations |
+| **Worker** | Execute protected renewal, payment, and notification operations |
 
 ---
 
@@ -144,7 +143,7 @@ flowchart LR
 - Subscription categories
 - Next billing date tracking
 - Due-subscription detection
-- Worker-driven subscription renewal
+- Protected renewal operations
 - Admin subscription deletion
 
 ### Payments
@@ -158,7 +157,7 @@ flowchart LR
 
 ### Notifications
 
-- Create notifications from the renewal workflow
+- Protected notification creation for workflow operations
 - View current user's notifications
 - Unread notification count
 - Mark individual notifications as read
@@ -167,69 +166,71 @@ flowchart LR
 
 ---
 
-## 📡 API Overview
+## 📡 API Reference
 
-The backend currently exposes **30 controller endpoints** across authentication, user management, subscriptions, payments, and notifications.
+The current backend exposes **34 controller routes/actions** across authentication, users, subscriptions, payments, and notifications.
 
 <details>
-<summary><strong>View all endpoints</strong></summary>
+<summary><strong>View API endpoints</strong></summary>
 
 ### Authentication — `/auth`
 
-| Method | Endpoint | Purpose |
-|---|---|---|
-| POST | `/auth/register` | Register a new user |
-| POST | `/auth/login` | Authenticate a user |
+| Method | Endpoint | Access | Purpose |
+|---|---|---|---|
+| POST | `/auth/register` | Public | Register a new user |
+| POST | `/auth/login` | Public | Authenticate a user |
 
 ### User Management — `/user`
 
-| Method | Endpoint | Purpose |
-|---|---|---|
-| GET | `/user/profile` | Get authenticated user's profile |
-| PATCH | `/user/update` | Update authenticated user's profile |
-| PATCH | `/user/changepassword` | Change authenticated user's password |
-| GET | `/user/alluser` | Admin: list users |
-| PATCH | `/user/role/{userId}` | Admin: update a user's role |
+| Method | Endpoint | Access | Purpose |
+|---|---|---|---|
+| GET | `/user/profile` | Authenticated | Get authenticated user's profile |
+| PATCH | `/user/update` | Authenticated | Update authenticated user's profile |
+| PATCH | `/user/changepassword` | Authenticated | Change authenticated user's password |
+| GET | `/user/alluser` | Admin | List users |
+| PATCH | `/user/role/{userId}/{role}` | Admin | Update a user's role |
 
 ### Subscriptions — `/subscription`
 
-| Method | Endpoint | Purpose |
-|---|---|---|
-| POST | `/subscription/create` | Create a subscription |
-| PATCH | `/subscription/update/{subscriptionId}` | Update a subscription |
-| GET | `/subscription/all` | Admin: list all subscriptions |
-| GET | `/subscription/{subscriptionId}` | Get a subscription by ID |
-| GET | `/subscription/user-subscription` | Get current user's subscriptions |
-| PUT | `/subscription/status/{subscriptionId}/{status}` | Update subscription status |
-| DELETE | `/subscription/{subscriptionId}` | Admin: delete a subscription |
-| PATCH | `/subscription/renew/{subscriptionId}` | Worker: renew a subscription |
-| GET | `/subscription/due` | Worker/Admin: get subscriptions due for renewal |
-| GET | `/subscription/categories` | Get available subscription categories |
+| Method | Endpoint | Access | Purpose |
+|---|---|---|---|
+| POST | `/subscription/create` | Authenticated | Create a subscription |
+| PATCH | `/subscription/update/{subscriptionid}` | Authenticated | Update a subscription |
+| GET | `/subscription/all` | Admin | List all subscriptions |
+| GET | `/subscription/{subscriptionid}` | Authenticated | Get a subscription by ID |
+| GET | `/subscription/user-subscription` | Authenticated | Get current user's subscriptions |
+| PUT | `/subscription/status/{subscriptionid}/{status}` | Authenticated | Update subscription status |
+| DELETE | `/subscription/{subscriptionid}` | Admin | Delete a subscription |
+| PATCH | `/subscription/renew/{subscriptionid}` | Worker | Renew a subscription |
+| GET | `/subscription/due` | Worker/Admin | Get subscriptions due for renewal |
+| GET | `/subscription/categories` | Authenticated | Get available categories |
 
 ### Payments — `/payment`
 
-| Method | Endpoint | Purpose |
-|---|---|---|
-| POST | `/payment/process` | Process a user payment |
-| POST | `/payment/processinternal` | Worker: process an internal payment |
-| GET | `/payment/{paymentId}` | Get a payment by ID |
-| GET | `/payment/subscription/{subscriptionId}` | Get payments for a subscription |
-| GET | `/payment/transactions` | Get user's transaction history |
-| GET | `/payment/all` | Admin: list all payments |
+| Method | Endpoint | Access | Purpose |
+|---|---|---|---|
+| POST | `/payment/process` | Authenticated | Process a user payment |
+| POST | `/payment/processinternal` | Worker | Process an internal payment |
+| GET | `/payment/{paymentid}` | Authenticated | Get a payment by ID |
+| GET | `/payment/subscription/{subscriptionId}` | Authenticated | Get payments for a subscription |
+| GET | `/payment/transactions` | Authenticated | Get user's transaction history |
+| GET | `/payment/all` | Admin | List all payments |
 
 ### Notifications — `/notification`
 
-| Method | Endpoint | Purpose |
-|---|---|---|
-| POST | `/notification/create` | Worker: create a notification |
-| GET | `/notification/my` | Get current user's notifications |
-| PATCH | `/notification/readall` | Mark all notifications as read |
-| PATCH | `/notification/read/{notificationId}` | Mark a notification as read |
-| GET | `/notification/unreadcount` | Get unread notification count |
-| DELETE | `/notification/delete/{notificationId}` | Admin: delete a notification |
-| GET | `/notification/all` | Admin: list all notifications |
+| Method | Endpoint | Access | Purpose |
+|---|---|---|---|
+| POST | `/notification/create` | Worker | Create a notification |
+| GET | `/notification/my` | Authenticated | Get current user's notifications |
+| PATCH | `/notification/readall` | Authenticated | Mark all notifications as read |
+| PATCH | `/notification/read/{notificationId}` | Authenticated | Mark a notification as read |
+| GET | `/notification/unreadcount` | Authenticated | Get unread notification count |
+| DELETE | `/notification/delete/{notificationId}` | Admin | Delete a notification |
+| GET | `/notification/all` | Admin | List all notifications |
 
 </details>
+
+> The exact request/response DTOs and validation rules are defined in the backend source under `Server/Server/Dto` and the corresponding services/controllers.
 
 ---
 
@@ -237,27 +238,30 @@ The backend currently exposes **30 controller endpoints** across authentication,
 
 ### Backend
 
-- **C# / ASP.NET Core**
-- **Entity Framework Core**
+- **C# / ASP.NET Core .NET 10**
+- **Entity Framework Core 10**
 - **ASP.NET Identity**
 - **JWT Authentication**
 - **Role-Based Authorization**
 - **SQL Server**
-- **BackgroundService**
-- **IHttpClientFactory**
 
 ### Frontend
 
-- **React**
+- **React 19**
 - **TypeScript**
+- **Vite**
 - **Axios**
 - **React Hook Form**
+- **React Router**
+- **Recharts**
+- **Tailwind CSS**
 
 ### Development & Testing
 
+- **EF Core Migrations**
 - **Postman**
 - **PowerShell**
-- **EF Core Migrations**
+- **npm**
 
 ---
 
@@ -265,20 +269,33 @@ The backend currently exposes **30 controller endpoints** across authentication,
 
 ```text
 Subtrack/
-├── Client/                         # React + TypeScript frontend
-│   └── src/
-│       └── Services/               # Axios API clients
+├── Client/
+│   ├── src/
+│   │   ├── Components/             # Dashboard, subscriptions, payments, notifications, etc.
+│   │   ├── Config/                 # Frontend environment/configuration
+│   │   ├── Layouts/                # Application layouts
+│   │   ├── Pages/                  # Login and registration pages
+│   │   ├── Routes/                 # React routing
+│   │   ├── Services/               # Axios API clients
+│   │   ├── Types/                  # TypeScript models
+│   │   └── Utils/                  # Authentication/client utilities
+│   ├── .env.example
+│   └── package.json
 │
 ├── Server/
-│   ├── Authentication/             # Authentication & user management
-│   ├── Subscriptions/              # Subscription management
-│   ├── Payments/                   # Payment processing
-│   ├── Notifications/              # Notification management
-│   ├── RenewalWorker/              # Automated renewal background worker
-│   ├── Substack.slnx
-│   └── run-all.ps1                 # Starts all backend components
+│   └── Server/
+│       ├── Controllers/            # HTTP API endpoints
+│       ├── Data/                   # EF Core DbContexts and persistence setup
+│       ├── Dto/                    # Request/response DTOs
+│       ├── Entities/               # Domain/persistence entities
+│       ├── Enum/                   # Application enums
+│       ├── Interfaces/             # Service contracts
+│       ├── Services/               # Application/business logic
+│       └── Program.cs               # ASP.NET Core application startup
 │
-└── Subtrack.postman_collection.json # API testing collection
+├── LICENSE
+├── README.md
+└── Setup Commands.txt
 ```
 
 ---
@@ -287,19 +304,19 @@ Subtrack/
 
 ### Prerequisites
 
-- .NET SDK 8.0 or later
-- Node.js 18+ and npm
-- SQL Server
-- Postman (optional, for API testing)
+- **.NET SDK 10**
+- **Node.js + npm**
+- **SQL Server**
+- **Postman** (optional, for API testing)
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/chauhan12harsh/Subtrack.git
+git clone -b monolithic-architecture https://github.com/chauhan12harsh/Subtrack.git
 cd Subtrack
 ```
 
-### 2. Build the backend
+### 2. Restore and build the backend
 
 ```bash
 cd Server
@@ -307,16 +324,28 @@ dotnet restore
 dotnet build
 ```
 
-Run the backend components individually from their project directories, or start them together with:
+### 3. Apply EF Core migrations
+
+From the `Server` directory, apply the database migrations required by the application. For Visual Studio Package Manager Console, the repository setup currently uses:
+
+```powershell
+Update-Database -Project Server -StartupProject Server
+```
+
+Make sure your local SQL Server connection/configuration is available before applying migrations.
+
+### 4. Start the backend
+
+The repository setup commands reference the backend startup script:
 
 ```powershell
 cd Server
-.\run-all.ps1
+./run.ps1
 ```
 
-Before starting the Renewal Worker, configure the service endpoints and worker credentials used by `Server/RenewalWorker`.
+If you prefer, run the ASP.NET Core project directly with the standard .NET CLI tooling.
 
-### 3. Run the frontend
+### 5. Run the frontend
 
 ```bash
 cd Client
@@ -324,60 +353,81 @@ npm install
 npm run dev
 ```
 
-The frontend contains dedicated Axios clients for Authentication, Subscription, Payment, and Notification services.
-
-### 4. Test the APIs
-
-Import `Subtrack.postman_collection.json` into Postman to explore and test the backend APIs.
+The frontend contains separate service modules for authentication, subscriptions, payments, and notifications while communicating with the single backend application.
 
 ---
 
-## 🗄️ Database
+## ⚙️ Configuration
 
-The backend uses **Entity Framework Core** with service-specific database contexts and migrations.
+The frontend provides a `.env.example` file for environment-specific configuration. Backend configuration should be supplied through the application's normal ASP.NET Core configuration mechanisms and local development secrets/environment variables as appropriate.
 
-SQL Server is configured for the Notification Service, while the other services maintain their own EF Core data contexts.
+Do not commit database credentials, JWT signing secrets, or other sensitive configuration to source control.
 
-Make sure the relevant connection strings and application configuration are set for your local environment before starting the services.
+---
+
+## 🗄️ Database & Persistence
+
+The backend uses **Entity Framework Core with SQL Server**. Persistence is organized through multiple EF Core data contexts within the same ASP.NET Core application, rather than through independently deployed database-owning services.
+
+EF Core migrations are committed with the backend and can be applied during local setup using the EF Core tooling.
+
+---
+
+## 🧪 Testing & API Exploration
+
+The API can be explored using Postman or any HTTP client. A typical development flow is:
+
+1. Register a user with `/auth/register`.
+2. Log in with `/auth/login` and obtain a JWT.
+3. Use the token for protected endpoints.
+4. Create and manage subscriptions.
+5. Process payments and inspect transaction history.
+6. Read and manage notifications.
+7. Use appropriate `Admin` or `Worker` roles when testing protected administrative or renewal operations.
 
 ---
 
 ## 🧭 What to Explore First
 
-If you're reviewing this project for the first time, a good path is:
+If you're reviewing the project for the first time, a useful path is:
 
-1. **Start with the architecture diagram** above to understand the service boundaries.
-2. **Open `Server/RenewalWorker`** to see the automated recurring-payment workflow.
-3. **Inspect the controllers** to see the 30-endpoint API surface and role restrictions.
-4. **Check the EF Core contexts/migrations** to understand persistence.
-5. **Open `Client/src/Services`** to see how the React frontend communicates with each backend service.
-6. **Import the Postman collection** to interact with the APIs.
+1. **`Server/Server/Program.cs`** — understand application registration and middleware.
+2. **`Server/Server/Controllers`** — understand the HTTP API surface and authorization boundaries.
+3. **`Server/Server/Services`** — follow the business logic behind each feature.
+4. **`Server/Server/Data`** — understand the EF Core persistence layer.
+5. **`Client/src/Services`** — see how the frontend communicates with the backend.
+6. **`Client/src/Components`** — explore the main user-facing functionality.
 
 ---
 
 ## 🎯 Engineering Highlights
 
-This project demonstrates practical backend concepts including:
+This project demonstrates practical full-stack engineering concepts including:
 
 - RESTful API design
-- JWT authentication and authorization
+- ASP.NET Core application architecture
+- Layered separation between controllers, services, and persistence
+- JWT authentication
 - Role-based access control
-- Multi-service backend organization
-- Service-to-service communication
-- Background job processing
-- Recurring workflow orchestration
-- Payment workflow separation
+- Subscription lifecycle management
+- Recurring billing workflow design
+- Payment processing
 - Notification-driven workflow outcomes
 - Entity Framework Core and migrations
 - SQL Server persistence
 - React-to-API integration
+- TypeScript frontend architecture
 - API testing with Postman
+
+The monolithic architecture also provides a useful foundation for later comparison with a microservices implementation: the feature boundaries are visible inside one application without introducing distributed-system complexity prematurely.
 
 ---
 
 ## 📌 Project Status
 
-SubTrack is an actively developed portfolio project focused on demonstrating **real-world backend architecture and full-stack integration** rather than a simple CRUD application.
+SubTrack is an actively developed portfolio project focused on demonstrating **real-world backend architecture, full-stack integration, authentication, recurring subscription workflows, and practical engineering patterns**.
+
+This `monolithic-architecture` branch is the source of truth for the monolithic implementation.
 
 ---
 
