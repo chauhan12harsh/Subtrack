@@ -1,0 +1,24 @@
+git clone -b <monolithic-architecture> <https://github.com/harsh12chauhan/Subtrack.git>
+
+cd Client
+npm install
+
+cd ..
+cd Server
+
+dotnet restore
+dotnet build
+
+Update-Database -Project Server -StartupProject Server
+
+./run.ps1
+
+cd ..
+
+cd Client
+
+npm run dev
+
+
+
+
