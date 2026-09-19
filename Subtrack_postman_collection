@@ -1,0 +1,1197 @@
+{
+  "info": {
+    "_postman_id": "6e6a3edd-e15b-45bd-9201-bea4f7483058",
+    "name": "Subtrack Interview",
+    "description": "**Subtrack mono** is a monolithic REST API collection for a subscription tracking application. It covers the full backend surface of the platform, organized into five functional modules:\n\n- **Auth** — User registration and login endpoints for managing authentication.\n- **User** — Endpoints for retrieving, updating user profiles, roles, and passwords.\n- **Subscription** — Full CRUD operations for subscriptions, including status management (active, paused, cancelled) and renewal workflows (due subscriptions, renew).\n- **Payments** — Payment processing and retrieval, covering individual payments, payments by subscription, and full transaction history per user.\n- **Notification** — Notification lifecycle management: create, read, mark as read (single or all), get unread count, and delete notifications.\n\nUse this collection to develop, test, and validate the end-to-end flows of the Subtrack platform from authentication through to payment and notification handling.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "57478474"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Test 1: Status code is 200\npm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\n\n// Test 2: Response time is acceptable\npm.test(\"Response time is less than 2000ms\", function () {\n    pm.expect(pm.response.responseTime).to.be.below(2000);\n});\n\n// Test 3: Response has a JSON body\npm.test(\"Response is JSON\", function () {\n    pm.response.to.be.json;\n});\n\n// Test 4: Response body contains a token\npm.test(\"Response contains token\", function () {\n    const jsonData = pm.response.json();\n    pm.expect(jsonData).to.have.property(\"token\");\n    pm.expect(jsonData.token).to.be.a(\"string\").and.not.empty;\n});\n\n// Test 5: Save token to environment variable\nconst jsonData = pm.response.json();\nif (jsonData && jsonData.token) {\n    pm.environment.set(\"authToken\", jsonData.token);\n    console.log(\"Token saved to environment variable: authToken\");\n}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    // \"Email\":\"admin@gmail\",\r\n    // \"Password\":\"admin@123\"\r\n    // \"Email\":\"alien@gmail\",\r\n    // \"Password\":\"alien@123\"\r\n    // \"Email\": \"namit\",\r\n    // \"Password\": \"namit\"\r\n    // \"Email\":\"worker@gmail\",\r\n    // \"Password\":\"worker@123\"\r\n     \"Email\": \"mars@gmail\",\r\n    \"Password\": \"mars@123\"\r\n    \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://localhost:7136/auth/login",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7136",
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    // \"Username\":\"mars\",\r\n    // \"Email\":\"mars@gmail\",\r\n    // \"Password\":\"mars@123\",\r\n    // \"Balance\":105000\r\n\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://localhost:7136/auth/register",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7136",
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Test",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://localhost:7136/auth/test",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7136",
+              "path": [
+                "auth",
+                "test"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "StartFragmenthttps://localhost:7025/auth/registerEndFragment"
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "AllUsersDetails",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzYzAwMzIyLWIyYjEtNDlmYi0xMzVhLTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODg0OTg2OTEsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9._y6e5UhsJajZFsdMpn6Bw3q7cv3B2ensXrfkWV4Ct5I",
+                "description": "Alien",
+                "disabled": true
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjUzNzMzYTQ0LWViN2UtNDk1MC0xMzU5LTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzg4NDk4MjA2LCJpc3MiOiJTdWJ0cmFjayIsImF1ZCI6IlN1YnRyYWNrLVVzZXIifQ.F4EAfWVEV0Xwqtaed88FREdt--qIb4ngSvBFr8mUk_M",
+                "description": "Admin"
+              }
+            ],
+            "url": {
+              "raw": "https://localhost:7136/user/alluser",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7136",
+              "path": [
+                "user",
+                "alluser"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdateUserProfile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzYzAwMzIyLWIyYjEtNDlmYi0xMzVhLTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODg0OTg2OTEsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9._y6e5UhsJajZFsdMpn6Bw3q7cv3B2ensXrfkWV4Ct5I",
+                "description": "Alien",
+                "disabled": true
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjUzNzMzYTQ0LWViN2UtNDk1MC0xMzU5LTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzg4NDk4MjA2LCJpc3MiOiJTdWJ0cmFjayIsImF1ZCI6IlN1YnRyYWNrLVVzZXIifQ.F4EAfWVEV0Xwqtaed88FREdt--qIb4ngSvBFr8mUk_M",
+                "description": "Admin",
+                "disabled": true
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjgxMDNkZmFkLTFmN2MtNGJkMi03N2RhLTA4ZGYwOTg2YmRlNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODg1MDQ0NzUsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9.QM93mtC7se6IbKMXjAGfylkFIYeqJqsBLdupH5gsbFI",
+                "description": "Mars"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"mars\",\r\n    \"email\": \"mars@gmail\",\r\n    \"balance\": 1050.00\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://localhost:7136/user/update",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7136",
+              "path": [
+                "user",
+                "update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdateUserRole",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzYzAwMzIyLWIyYjEtNDlmYi0xMzVhLTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODg0OTg2OTEsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9._y6e5UhsJajZFsdMpn6Bw3q7cv3B2ensXrfkWV4Ct5I",
+                "description": "Alien",
+                "disabled": true
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjUzNzMzYTQ0LWViN2UtNDk1MC0xMzU5LTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzg4NDk4MjA2LCJpc3MiOiJTdWJ0cmFjayIsImF1ZCI6IlN1YnRyYWNrLVVzZXIifQ.F4EAfWVEV0Xwqtaed88FREdt--qIb4ngSvBFr8mUk_M",
+                "description": "Admin"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjgxMDNkZmFkLTFmN2MtNGJkMi03N2RhLTA4ZGYwOTg2YmRlNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODg1MDQ0NzUsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9.QM93mtC7se6IbKMXjAGfylkFIYeqJqsBLdupH5gsbFI",
+                "description": "Mars",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "https://localhost:7136/user/role/8103dfad-1f7c-4bd2-77da-08df0986bde6/User",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7136",
+              "path": [
+                "user",
+                "role",
+                "8103dfad-1f7c-4bd2-77da-08df0986bde6",
+                "User"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UserDetailsById",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzYzAwMzIyLWIyYjEtNDlmYi0xMzVhLTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODg0OTg2OTEsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9._y6e5UhsJajZFsdMpn6Bw3q7cv3B2ensXrfkWV4Ct5I",
+                "description": "Alien",
+                "disabled": true
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjUzNzMzYTQ0LWViN2UtNDk1MC0xMzU5LTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzg4NDk4MjA2LCJpc3MiOiJTdWJ0cmFjayIsImF1ZCI6IlN1YnRyYWNrLVVzZXIifQ.F4EAfWVEV0Xwqtaed88FREdt--qIb4ngSvBFr8mUk_M",
+                "description": "Admin",
+                "disabled": true
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjQ4MTkzNGJkLWFhM2EtNDlkOS02YWJlLTA4ZGYwYmYxMmUyMSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODg3Nzg0NTEsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9.WGxuixt05bmLd7z6jhtQQO48MXDZKYgJ8H72TthPBrI",
+                "description": "Mars"
+              }
+            ],
+            "url": {
+              "raw": "https://localhost:7136/user/profile",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7136",
+              "path": [
+                "user",
+                "profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdatePassword",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzYzAwMzIyLWIyYjEtNDlmYi0xMzVhLTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODg0OTg2OTEsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9._y6e5UhsJajZFsdMpn6Bw3q7cv3B2ensXrfkWV4Ct5I",
+                "description": "Alien",
+                "disabled": true
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjUzNzMzYTQ0LWViN2UtNDk1MC0xMzU5LTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzg4NDk4MjA2LCJpc3MiOiJTdWJ0cmFjayIsImF1ZCI6IlN1YnRyYWNrLVVzZXIifQ.F4EAfWVEV0Xwqtaed88FREdt--qIb4ngSvBFr8mUk_M",
+                "description": "Admin",
+                "disabled": true
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjgxMDNkZmFkLTFmN2MtNGJkMi03N2RhLTA4ZGYwOTg2YmRlNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODg1MDQ0NzUsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9.QM93mtC7se6IbKMXjAGfylkFIYeqJqsBLdupH5gsbFI",
+                "description": "Mars"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"Password\":\"mars@123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://localhost:7136/user/changepassword",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7136",
+              "path": [
+                "user",
+                "changepassword"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Subscription",
+      "item": [
+        {
+          "name": "Status",
+          "item": [
+            {
+              "name": "PauseSubscription",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzYzAwMzIyLWIyYjEtNDlmYi0xMzVhLTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODczNzg4MjYsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9.PcO3z0efhA4pRZ7yzLAEs28rbv4HTwuhD2oEauo2ZQ0",
+                    "description": "Alien"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjUzNzMzYTQ0LWViN2UtNDk1MC0xMzU5LTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzg3Mzc4NjcyLCJpc3MiOiJTdWJ0cmFjayIsImF1ZCI6IlN1YnRyYWNrLVVzZXIifQ.zT_iuivlGtdTqXvEVYzSj_7PDpqXQcs1VOSyz0Fefvc",
+                    "description": "Admin",
+                    "disabled": true
+                  }
+                ],
+                "url": {
+                  "raw": "https://localhost:7136/subscription/status/0c9b34ac-3c32-4529-27d1-08deff69e884/Paused",
+                  "protocol": "https",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "7136",
+                  "path": [
+                    "subscription",
+                    "status",
+                    "0c9b34ac-3c32-4529-27d1-08deff69e884",
+                    "Paused"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "CancelledSubscription",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzYzAwMzIyLWIyYjEtNDlmYi0xMzVhLTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODczNzg4MjYsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9.PcO3z0efhA4pRZ7yzLAEs28rbv4HTwuhD2oEauo2ZQ0",
+                    "description": "Alien"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjUzNzMzYTQ0LWViN2UtNDk1MC0xMzU5LTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzg3Mzc4NjcyLCJpc3MiOiJTdWJ0cmFjayIsImF1ZCI6IlN1YnRyYWNrLVVzZXIifQ.zT_iuivlGtdTqXvEVYzSj_7PDpqXQcs1VOSyz0Fefvc",
+                    "description": "Admin",
+                    "disabled": true
+                  }
+                ],
+                "url": {
+                  "raw": "https://localhost:7136/subscription/status/0c9b34ac-3c32-4529-27d1-08deff69e884/Cancelled",
+                  "protocol": "https",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "7136",
+                  "path": [
+                    "subscription",
+                    "status",
+                    "0c9b34ac-3c32-4529-27d1-08deff69e884",
+                    "Cancelled"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "ActiveSubscription",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzYzAwMzIyLWIyYjEtNDlmYi0xMzVhLTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODczNzg4MjYsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9.PcO3z0efhA4pRZ7yzLAEs28rbv4HTwuhD2oEauo2ZQ0",
+                    "description": "Alien"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjUzNzMzYTQ0LWViN2UtNDk1MC0xMzU5LTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzg3Mzc4NjcyLCJpc3MiOiJTdWJ0cmFjayIsImF1ZCI6IlN1YnRyYWNrLVVzZXIifQ.zT_iuivlGtdTqXvEVYzSj_7PDpqXQcs1VOSyz0Fefvc",
+                    "description": "Admin",
+                    "disabled": true
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "https://localhost:7136/subscription/status/0c9b34ac-3c32-4529-27d1-08deff69e884/Active",
+                  "protocol": "https",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "7136",
+                  "path": [
+                    "subscription",
+                    "status",
+                    "0c9b34ac-3c32-4529-27d1-08deff69e884",
+                    "Active"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Renewal",
+          "item": [
+            {
+              "name": "DueSubscriptions",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImJhMzgyNjZhLWQ2ZjctNDFlYy0wOTNhLTA4ZGYwNDA2YWVhYSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IldvcmtlciIsImV4cCI6MTc4Nzg5OTYwMywiaXNzIjoiU3VidHJhY2siLCJhdWQiOiJTdWJ0cmFjay1Vc2VyIn0._xyB6FV3JuLETX2qjoouHnO3CRoN3djfjSc9Fj0zKHc",
+                    "description": "Worker",
+                    "disabled": true
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzYzAwMzIyLWIyYjEtNDlmYi0xMzVhLTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODc4OTk4NzEsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9.ufdMRaI2w5mMH1AXaLL2pOu3gPku6MxL-yhb0OC-_ag",
+                    "description": "Alien",
+                    "disabled": true
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImEyZDdmNDZiLTBjYjctNDYwZi05N2VhLTA4ZGYwMzQwNWFlNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODc5MTI3OTIsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9.ejwuucO6BnFKxHAmbL08uBWSsVjYdP9Yx7rSSZJ5_Zw",
+                    "description": "Namit",
+                    "disabled": true
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjUzNzMzYTQ0LWViN2UtNDk1MC0xMzU5LTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzg4MTAwMzY2LCJpc3MiOiJTdWJ0cmFjayIsImF1ZCI6IlN1YnRyYWNrLVVzZXIifQ.BYViuabXFKnsv1cTFIoygGru1N8CfOD_vjy_hdeFvcg",
+                    "description": "Admin"
+                  }
+                ],
+                "url": {
+                  "raw": "https://localhost:7136/subscription/due",
+                  "protocol": "https",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "7136",
+                  "path": [
+                    "subscription",
+                    "due"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "RenewSubscription",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImJhMzgyNjZhLWQ2ZjctNDFlYy0wOTNhLTA4ZGYwNDA2YWVhYSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IldvcmtlciIsImV4cCI6MTc4Nzg5OTYwMywiaXNzIjoiU3VidHJhY2siLCJhdWQiOiJTdWJ0cmFjay1Vc2VyIn0._xyB6FV3JuLETX2qjoouHnO3CRoN3djfjSc9Fj0zKHc",
+                    "description": "Worker"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzYzAwMzIyLWIyYjEtNDlmYi0xMzVhLTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODc4OTk4NzEsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9.ufdMRaI2w5mMH1AXaLL2pOu3gPku6MxL-yhb0OC-_ag",
+                    "description": "Alien",
+                    "disabled": true
+                  }
+                ],
+                "url": {
+                  "raw": "https://localhost:7136/subscription/renew/d2cebf5e-d587-44cc-2374-08df0407a060",
+                  "protocol": "https",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "7136",
+                  "path": [
+                    "subscription",
+                    "renew",
+                    "d2cebf5e-d587-44cc-2374-08df0407a060"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "GetAllSubscription",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzYzAwMzIyLWIyYjEtNDlmYi0xMzVhLTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODczNzg4MjYsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9.PcO3z0efhA4pRZ7yzLAEs28rbv4HTwuhD2oEauo2ZQ0",
+                "description": "Alien",
+                "disabled": true
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjUzNzMzYTQ0LWViN2UtNDk1MC0xMzU5LTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzg3Mzc4NjcyLCJpc3MiOiJTdWJ0cmFjayIsImF1ZCI6IlN1YnRyYWNrLVVzZXIifQ.zT_iuivlGtdTqXvEVYzSj_7PDpqXQcs1VOSyz0Fefvc",
+                "description": "Admin"
+              }
+            ],
+            "url": {
+              "raw": "https://localhost:7136/subscription/all",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7136",
+              "path": [
+                "subscription",
+                "all"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CreateSubscription",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzYzAwMzIyLWIyYjEtNDlmYi0xMzVhLTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODg0OTg2OTEsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9._y6e5UhsJajZFsdMpn6Bw3q7cv3B2ensXrfkWV4Ct5I",
+                "description": "Alien"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjUzNzMzYTQ0LWViN2UtNDk1MC0xMzU5LTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzg3Mzc4NjcyLCJpc3MiOiJTdWJ0cmFjayIsImF1ZCI6IlN1YnRyYWNrLVVzZXIifQ.zT_iuivlGtdTqXvEVYzSj_7PDpqXQcs1VOSyz0Fefvc",
+                "description": "Admin",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    // \"Name\": \"AmazonePrime\",\r\n    // \"Amount\": 699,\r\n    // \"BillingCycle\": \"Monthly\",\r\n    // \"NextBillingDate\": \"2026-08-27\",\r\n    // \"Category\": \"Video Streaming\"\r\n   \r\n    // \"Name\": \"DisneyPlus\",\r\n    // \"Amount\": 899,\r\n    // \"BillingCycle\": \"Yearly\",\r\n    // \"NextBillingDate\": \"2027-03-15\",\r\n    // \"Category\": \"Video Streaming\"\r\n  \r\n    // \"Name\": \"YouTubePremium\",\r\n    // \"Amount\": 129,\r\n    // \"BillingCycle\": \"Monthly\",\r\n    // \"NextBillingDate\": \"2026-09-12\",\r\n    // \"Category\": \"Entertainment\"\r\n   \r\n    // \"Name\": \"Netflix\",\r\n    // \"Amount\": 649,\r\n    // \"BillingCycle\": \"Monthly\",\r\n    // \"NextBillingDate\": \"2026-09-05\",\r\n    // \"Category\": \"Video Streaming\"\r\n  \r\n    // \"Name\": \"Spotify\",\r\n    // \"Amount\": 119,\r\n    // \"BillingCycle\": \"Monthly\",\r\n    // \"NextBillingDate\": \"2026-08-28\",\r\n    // \"Category\": \"Music Streaming\"\r\n\r\n    // \"Name\": \"Microsoft365\",\r\n    // \"Amount\": 4899,\r\n    // \"BillingCycle\": \"Yearly\",\r\n    // \"NextBillingDate\": \"2026-08-29\",\r\n    // \"Category\": \"Productivity\"\r\n\r\n    // \"Name\": \"GoogleOne\",\r\n    // \"Amount\": 130,\r\n    // \"BillingCycle\": \"Monthly\",\r\n    // \"NextBillingDate\": \"2026-08-29\",\r\n    // \"Category\": \"Cloud Storage\"\r\n\r\n    // \"Name\": \"AppleMusic\",\r\n    // \"Amount\": 99,\r\n    // \"BillingCycle\": \"Monthly\",\r\n    // \"NextBillingDate\": \"2026-08-29\",\r\n    // \"Category\": \"Music Streaming\"\r\n\r\n    \"Name\": \"Bike EMI\",\r\n    \"Amount\": 5400,\r\n    \"BillingCycle\": \"Monthly\",\r\n    \"NextBillingDate\": \"2026-09-03\",\r\n    \"Category\": \"EMI\"\r\n \r\n    // \"Name\": \"AdobeCreativeCloud\",\r\n    // \"Amount\": 1675,\r\n    // \"BillingCycle\": \"Monthly\",\r\n    // \"NextBillingDate\": \"2026-09-25\",\r\n    // \"Category\": \"Design & Creativity\"\r\n\r\n    // \"Name\": \"Hotstar\",\r\n    // \"Amount\": 1499,\r\n    // \"BillingCycle\": \"Yearly\",\r\n    // \"NextBillingDate\": \"2027-06-10\",\r\n    // \"Category\": \"Video Streaming\"\r\n   \r\n    // \"Name\": \"Dropbox\",\r\n    // \"Amount\": 999,\r\n    // \"BillingCycle\": \"Monthly\",\r\n    // \"NextBillingDate\": \"2026-09-30\",\r\n    // \"Category\": \"Cloud Storage\"\r\n\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://localhost:7136/subscription/create",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7136",
+              "path": [
+                "subscription",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UserSubscriptions",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Test 1: Status code is 200\npm.test(\"Status code should be 200\", function () {\n    pm.expect(pm.response.to.have.status(200))\n})\n\n// Test 2: Response time is acceptable\npm.test(\"Response time code should be 20ms\", function(){\n    pm.expect(pm.response.responseTime).to.be.below(50)\n})\n\n// Test 3: Response body is an array\npm.test(\"Response body should be an array\", function () {\n    const jsonData = pm.response.json();\n    pm.expect(jsonData).to.be.an(\"array\");\n});\n\n// Test 4: Array is not empty\npm.test(\"Response array should not be empty\", function () {\n    const jsonData = pm.response.json();\n    pm.expect(jsonData.length).to.be.greaterThan(0);\n});\n\n// Test 5: Each subscription has required fields\npm.test(\"Each subscription should have required fields\", function () {\n    const jsonData = pm.response.json();\n    jsonData.forEach(function (subscription) {        \n        pm.expect(subscription).to.have.property(\"id\");\n        pm.expect(subscription).to.have.property(\"userId\");\n        pm.expect(subscription).to.have.property(\"name\");\n        pm.expect(subscription).to.have.property(\"amount\");\n        pm.expect(subscription).to.have.property(\"category\");\n        pm.expect(subscription).to.have.property(\"status\");\n        pm.expect(subscription).to.have.property(\"billingCycle\");\n        pm.expect(subscription).to.have.property(\"nextBillingDate\");\n    });\n});\n\n// Test 6: Amount should be a positive number\npm.test(\"Amount should be a positive number\", function () {\n    const jsonData = pm.response.json();\n    jsonData.forEach(function (subscription) {\n        pm.expect(subscription.amount).to.be.a(\"number\");\n        pm.expect(subscription.amount).to.be.above(0);\n    });\n});\n\n// Test 7: Status field should be a non-empty string\npm.test(\"Status field should be a non-empty string\", function () {\n    const jsonData = pm.response.json();\n    jsonData.forEach(function (subscription) {\n        pm.expect(subscription.status).to.be.a(\"string\").and.not.empty;\n    });\n});\n\n// Test 8: billingCycle should be a non-empty string\npm.test(\"BillingCycle should be a non-empty string\", function () {\n    const jsonData = pm.response.json();\n    jsonData.forEach(function (subscription) {\n        pm.expect(subscription.billingCycle).to.be.a(\"string\").and.not.empty;\n    });\n});\n\n// Test 9: nextBillingDate should be a valid date string\npm.test(\"nextBillingDate should be a valid date string\", function () {\n    const jsonData = pm.response.json();\n    jsonData.forEach(function (subscription) {\n        pm.expect(subscription.nextBillingDate).to.be.a(\"string\");\n        pm.expect(new Date(subscription.nextBillingDate).toString()).to.not.equal(\"Invalid Date\");\n    });\n});\n\n// Test 10: id and userId should be non-empty strings\npm.test(\"id and userId should be non-empty strings\", function () {\n    const jsonData = pm.response.json();\n    jsonData.forEach(function (subscription) {\n        pm.expect(subscription.id).to.be.a(\"string\").and.not.empty;\n        pm.expect(subscription.userId).to.be.a(\"string\").and.not.empty;\n    });\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzYzAwMzIyLWIyYjEtNDlmYi0xMzVhLTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODgwODQwNjksImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9.-HE-6_ZLG6FM_FBmnasyr3FLwxdv8ffzYMzkoglDXVE",
+                "description": "Alien",
+                "disabled": true
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjUzNzMzYTQ0LWViN2UtNDk1MC0xMzU5LTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzg3Mzc4NjcyLCJpc3MiOiJTdWJ0cmFjayIsImF1ZCI6IlN1YnRyYWNrLVVzZXIifQ.zT_iuivlGtdTqXvEVYzSj_7PDpqXQcs1VOSyz0Fefvc",
+                "description": "Admin",
+                "disabled": true
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjQ4MTkzNGJkLWFhM2EtNDlkOS02YWJlLTA4ZGYwYmYxMmUyMSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODk0NTc4NjksImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9.bxDWpVsYYrw1kWKJAj4YgcfHf2lG08ZKSRz41MxmIAI",
+                "description": "Mars"
+              }
+            ],
+            "url": {
+              "raw": "https://localhost:7136/subscription/user-subscription",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7136",
+              "path": [
+                "subscription",
+                "user-subscription"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DeleteSubscription",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzYzAwMzIyLWIyYjEtNDlmYi0xMzVhLTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODczNzg4MjYsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9.PcO3z0efhA4pRZ7yzLAEs28rbv4HTwuhD2oEauo2ZQ0",
+                "description": "Alien",
+                "disabled": true
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjUzNzMzYTQ0LWViN2UtNDk1MC0xMzU5LTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzg3Mzc4NjcyLCJpc3MiOiJTdWJ0cmFjayIsImF1ZCI6IlN1YnRyYWNrLVVzZXIifQ.zT_iuivlGtdTqXvEVYzSj_7PDpqXQcs1VOSyz0Fefvc",
+                "description": "Admin"
+              }
+            ],
+            "url": {
+              "raw": "https://localhost:7136/subscription/bd7f1255-1389-48ca-27ce-08deff69e884",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7136",
+              "path": [
+                "subscription",
+                "bd7f1255-1389-48ca-27ce-08deff69e884"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetSubscription",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzYzAwMzIyLWIyYjEtNDlmYi0xMzVhLTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODc4OTk4NzEsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9.ufdMRaI2w5mMH1AXaLL2pOu3gPku6MxL-yhb0OC-_ag",
+                "description": "Alien"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjUzNzMzYTQ0LWViN2UtNDk1MC0xMzU5LTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzg3Mzc4NjcyLCJpc3MiOiJTdWJ0cmFjayIsImF1ZCI6IlN1YnRyYWNrLVVzZXIifQ.zT_iuivlGtdTqXvEVYzSj_7PDpqXQcs1VOSyz0Fefvc",
+                "description": "Admin",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "https://localhost:7136/subscription/0c9b34ac-3c32-4529-27d1-08deff69e884",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7136",
+              "path": [
+                "subscription",
+                "0c9b34ac-3c32-4529-27d1-08deff69e884"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdateSubscription",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzYzAwMzIyLWIyYjEtNDlmYi0xMzVhLTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODczNzg4MjYsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9.PcO3z0efhA4pRZ7yzLAEs28rbv4HTwuhD2oEauo2ZQ0",
+                "description": "Alien"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjUzNzMzYTQ0LWViN2UtNDk1MC0xMzU5LTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzg3Mzc4NjcyLCJpc3MiOiJTdWJ0cmFjayIsImF1ZCI6IlN1YnRyYWNrLVVzZXIifQ.zT_iuivlGtdTqXvEVYzSj_7PDpqXQcs1VOSyz0Fefvc",
+                "description": "Admin",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n//   \"Name\": \"Electric Bill\",\r\n  \"Amount\": 459.00\r\n//   \"category\":\"Bill\",\r\n//   \"BillingCycle\": \"Monthly\"\r\n//   \"NextBillingDate\": \"2026-09-24\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://localhost:7136/subscription/update/0c9b34ac-3c32-4529-27d1-08deff69e884",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7136",
+              "path": [
+                "subscription",
+                "update",
+                "0c9b34ac-3c32-4529-27d1-08deff69e884"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "ProcessPayment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzYzAwMzIyLWIyYjEtNDlmYi0xMzVhLTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODc4MDgyNzIsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9.3RMb5UqN2Y61ohSZ4BbdRnc4JLJhRjqSAWJr7cxxvns",
+                "description": "Alien",
+                "disabled": true
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjUzNzMzYTQ0LWViN2UtNDk1MC0xMzU5LTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzg3Mzc4NjcyLCJpc3MiOiJTdWJ0cmFjayIsImF1ZCI6IlN1YnRyYWNrLVVzZXIifQ.zT_iuivlGtdTqXvEVYzSj_7PDpqXQcs1VOSyz0Fefvc",
+                "description": "Admin",
+                "disabled": true
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImJhMzgyNjZhLWQ2ZjctNDFlYy0wOTNhLTA4ZGYwNDA2YWVhYSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IldvcmtlciIsImV4cCI6MTc4ODAyOTU1MywiaXNzIjoiU3VidHJhY2siLCJhdWQiOiJTdWJ0cmFjay1Vc2VyIn0.1w5Vr-N7-Q53pzwtSNCIC1Ylnrt9jMtZTWQkLL3Rl4w",
+                "description": "Worker"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"subscriptionId\": \"df018bba-54d1-49a8-300b-08deff4bcf1c\",\r\n  \"amount\": 987.00\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://localhost:7136/payment/process",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7136",
+              "path": [
+                "payment",
+                "process"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PaymentBySubscriptionId",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzYzAwMzIyLWIyYjEtNDlmYi0xMzVhLTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODczNzg4MjYsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9.PcO3z0efhA4pRZ7yzLAEs28rbv4HTwuhD2oEauo2ZQ0",
+                "description": "Alien"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjUzNzMzYTQ0LWViN2UtNDk1MC0xMzU5LTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzg3Mzc4NjcyLCJpc3MiOiJTdWJ0cmFjayIsImF1ZCI6IlN1YnRyYWNrLVVzZXIifQ.zT_iuivlGtdTqXvEVYzSj_7PDpqXQcs1VOSyz0Fefvc",
+                "description": "Admin",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "https://localhost:7136/payment/subscription/0c9b34ac-3c32-4529-27d1-08deff69e884",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7136",
+              "path": [
+                "payment",
+                "subscription",
+                "0c9b34ac-3c32-4529-27d1-08deff69e884"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PaymentById",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzYzAwMzIyLWIyYjEtNDlmYi0xMzVhLTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODczNzg4MjYsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9.PcO3z0efhA4pRZ7yzLAEs28rbv4HTwuhD2oEauo2ZQ0",
+                "description": "Alien"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjUzNzMzYTQ0LWViN2UtNDk1MC0xMzU5LTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzg3Mzc4NjcyLCJpc3MiOiJTdWJ0cmFjayIsImF1ZCI6IlN1YnRyYWNrLVVzZXIifQ.zT_iuivlGtdTqXvEVYzSj_7PDpqXQcs1VOSyz0Fefvc",
+                "description": "Admin",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "https://localhost:7136/payment/433ab700-fbf4-4067-7caf-08deff70bde5",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7136",
+              "path": [
+                "payment",
+                "433ab700-fbf4-4067-7caf-08deff70bde5"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UserTransactions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzYzAwMzIyLWIyYjEtNDlmYi0xMzVhLTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODgwODQwNjksImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9.-HE-6_ZLG6FM_FBmnasyr3FLwxdv8ffzYMzkoglDXVE",
+                "description": "Alien",
+                "disabled": true
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjUzNzMzYTQ0LWViN2UtNDk1MC0xMzU5LTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzg3Mzc4NjcyLCJpc3MiOiJTdWJ0cmFjayIsImF1ZCI6IlN1YnRyYWNrLVVzZXIifQ.zT_iuivlGtdTqXvEVYzSj_7PDpqXQcs1VOSyz0Fefvc",
+                "description": "Admin",
+                "disabled": true
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjQ4MTkzNGJkLWFhM2EtNDlkOS02YWJlLTA4ZGYwYmYxMmUyMSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODk3NjA3OTgsImlzcyI6InN1YnRyYWNrIiwiYXVkIjoic3VidHJhY2stY2xpZW50In0.ghRXdGZePYgB7Y99pgIbKCoxWMtqniUiMKJOe927OYA",
+                "description": "Mars"
+              }
+            ],
+            "url": {
+              "raw": "https://localhost:7136/payment/transactions",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7136",
+              "path": [
+                "payment",
+                "transactions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "AllPayments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzYzAwMzIyLWIyYjEtNDlmYi0xMzVhLTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODczNzg4MjYsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9.PcO3z0efhA4pRZ7yzLAEs28rbv4HTwuhD2oEauo2ZQ0",
+                "description": "Alien",
+                "disabled": true
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjUzNzMzYTQ0LWViN2UtNDk1MC0xMzU5LTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzg4MDMwOTY5LCJpc3MiOiJTdWJ0cmFjayIsImF1ZCI6IlN1YnRyYWNrLVVzZXIifQ.kD18vIfgSnbUADeAUcOlqN_WeOXYcgpsNOqVe2Qiztk",
+                "description": "Admin"
+              }
+            ],
+            "url": {
+              "raw": "https://localhost:7136/payment/all",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7136",
+              "path": [
+                "payment",
+                "all"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Notification",
+      "item": [
+        {
+          "name": "CreateNotification",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzYzAwMzIyLWIyYjEtNDlmYi0xMzVhLTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODg0OTg2OTEsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9._y6e5UhsJajZFsdMpn6Bw3q7cv3B2ensXrfkWV4Ct5I",
+                "description": "Alien",
+                "disabled": true
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImJhMzgyNjZhLWQ2ZjctNDFlYy0wOTNhLTA4ZGYwNDA2YWVhYSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IldvcmtlciIsImV4cCI6MTc4ODQ5OTA4NCwiaXNzIjoiU3VidHJhY2siLCJhdWQiOiJTdWJ0cmFjay1Vc2VyIn0.C2r1a07II1caRzQkfzhRotGVB9d27OmNhV3hyLflSz0",
+                "description": "Worker"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"userId\": \"1680d57c-2012-4948-a0bb-08df02bc6618\",\r\n    \"title\": \"Payment Successful\",\r\n    \"message\": \"Bike EMI Paid successfully.\",\r\n    \"type\": 3\r\n}\r\n\r\n// {\r\n//     \"userId\": \"13c00322-b2b1-49fb-135a-08deff49d216\",\r\n//     \"title\": \"Payment Failed\",\r\n//     \"message\": \"Unable to process Spotify subscription payment.\",\r\n//     \"type\": 2\r\n// }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://localhost:7136/notification/create",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7136",
+              "path": [
+                "notification",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "MyNotifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzYzAwMzIyLWIyYjEtNDlmYi0xMzVhLTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODg0OTg2OTEsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9._y6e5UhsJajZFsdMpn6Bw3q7cv3B2ensXrfkWV4Ct5I",
+                "description": "Alien",
+                "disabled": true
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImEyZDdmNDZiLTBjYjctNDYwZi05N2VhLTA4ZGYwMzQwNWFlNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODc5MTI3OTIsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9.ejwuucO6BnFKxHAmbL08uBWSsVjYdP9Yx7rSSZJ5_Zw",
+                "description": "Namit",
+                "disabled": true
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjQ4MTkzNGJkLWFhM2EtNDlkOS02YWJlLTA4ZGYwYmYxMmUyMSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODg3Nzg0NTEsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9.WGxuixt05bmLd7z6jhtQQO48MXDZKYgJ8H72TthPBrI",
+                "description": "Mars"
+              }
+            ],
+            "url": {
+              "raw": "https://localhost:7136/notification/my",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7136",
+              "path": [
+                "notification",
+                "my"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ReadAllNotification",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzYzAwMzIyLWIyYjEtNDlmYi0xMzVhLTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODg0OTg2OTEsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9._y6e5UhsJajZFsdMpn6Bw3q7cv3B2ensXrfkWV4Ct5I",
+                "description": "Alien"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImEyZDdmNDZiLTBjYjctNDYwZi05N2VhLTA4ZGYwMzQwNWFlNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODc5MTI3OTIsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9.ejwuucO6BnFKxHAmbL08uBWSsVjYdP9Yx7rSSZJ5_Zw",
+                "description": "Namit",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "https://localhost:7136/notification/readall",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7136",
+              "path": [
+                "notification",
+                "readall"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ReadNotification",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzYzAwMzIyLWIyYjEtNDlmYi0xMzVhLTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODg0OTg2OTEsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9._y6e5UhsJajZFsdMpn6Bw3q7cv3B2ensXrfkWV4Ct5I",
+                "description": "Alien"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImEyZDdmNDZiLTBjYjctNDYwZi05N2VhLTA4ZGYwMzQwNWFlNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODc5MTI3OTIsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9.ejwuucO6BnFKxHAmbL08uBWSsVjYdP9Yx7rSSZJ5_Zw",
+                "description": "Namit",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "https://localhost:7136/notification/read/3114e102-e8e1-4d89-732b-08df05eb4da3",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7136",
+              "path": [
+                "notification",
+                "read",
+                "3114e102-e8e1-4d89-732b-08df05eb4da3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UnreadCount",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzYzAwMzIyLWIyYjEtNDlmYi0xMzVhLTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODg0OTg2OTEsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9._y6e5UhsJajZFsdMpn6Bw3q7cv3B2ensXrfkWV4Ct5I",
+                "description": "Alien"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImEyZDdmNDZiLTBjYjctNDYwZi05N2VhLTA4ZGYwMzQwNWFlNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODc5MTI3OTIsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9.ejwuucO6BnFKxHAmbL08uBWSsVjYdP9Yx7rSSZJ5_Zw",
+                "description": "Namit",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "https://localhost:7136/notification/unreadcount",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7136",
+              "path": [
+                "notification",
+                "unreadcount"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DeleteNotification",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzYzAwMzIyLWIyYjEtNDlmYi0xMzVhLTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODc4OTk4NzEsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9.ufdMRaI2w5mMH1AXaLL2pOu3gPku6MxL-yhb0OC-_ag",
+                "description": "Alien",
+                "disabled": true
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImEyZDdmNDZiLTBjYjctNDYwZi05N2VhLTA4ZGYwMzQwNWFlNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODc5MTI3OTIsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9.ejwuucO6BnFKxHAmbL08uBWSsVjYdP9Yx7rSSZJ5_Zw",
+                "description": "Namit",
+                "disabled": true
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjUzNzMzYTQ0LWViN2UtNDk1MC0xMzU5LTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzg4NDk4MjA2LCJpc3MiOiJTdWJ0cmFjayIsImF1ZCI6IlN1YnRyYWNrLVVzZXIifQ.F4EAfWVEV0Xwqtaed88FREdt--qIb4ngSvBFr8mUk_M",
+                "description": "Admin"
+              }
+            ],
+            "url": {
+              "raw": "https://localhost:7136/notification/delete/8e94e969-322c-4886-31e9-08df076e4a47",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7136",
+              "path": [
+                "notification",
+                "delete",
+                "8e94e969-322c-4886-31e9-08df076e4a47"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetAllNotification",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzYzAwMzIyLWIyYjEtNDlmYi0xMzVhLTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODc4OTk4NzEsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9.ufdMRaI2w5mMH1AXaLL2pOu3gPku6MxL-yhb0OC-_ag",
+                "description": "Alien",
+                "disabled": true
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImEyZDdmNDZiLTBjYjctNDYwZi05N2VhLTA4ZGYwMzQwNWFlNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODc5MTI3OTIsImlzcyI6IlN1YnRyYWNrIiwiYXVkIjoiU3VidHJhY2stVXNlciJ9.ejwuucO6BnFKxHAmbL08uBWSsVjYdP9Yx7rSSZJ5_Zw",
+                "description": "Namit",
+                "disabled": true
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjUzNzMzYTQ0LWViN2UtNDk1MC0xMzU5LTA4ZGVmZjQ5ZDIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzg4NDk4MjA2LCJpc3MiOiJTdWJ0cmFjayIsImF1ZCI6IlN1YnRyYWNrLVVzZXIifQ.F4EAfWVEV0Xwqtaed88FREdt--qIb4ngSvBFr8mUk_M",
+                "description": "Admin"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImJhMzgyNjZhLWQ2ZjctNDFlYy0wOTNhLTA4ZGYwNDA2YWVhYSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IldvcmtlciIsImV4cCI6MTc4Nzg5OTYwMywiaXNzIjoiU3VidHJhY2siLCJhdWQiOiJTdWJ0cmFjay1Vc2VyIn0._xyB6FV3JuLETX2qjoouHnO3CRoN3djfjSc9Fj0zKHc",
+                "description": "Worker",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "https://localhost:7136/notification/all",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7136",
+              "path": [
+                "notification",
+                "all"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
