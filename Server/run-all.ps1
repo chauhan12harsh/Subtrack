@@ -1,5 +1,0 @@
-﻿Start-Process powershell -ArgumentList "-NoExit", "-Command", "dotnet run --project .\Authentication\Authentication.csproj"
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "dotnet run --project .\Payments\Payments.csproj"
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "dotnet run --project .\Subscriptions\Subscriptions.csproj"
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "dotnet run --project .\Notifications\Notifications.csproj"
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "dotnet run --project .\RenewalWorker\RenewalWorker.csproj"

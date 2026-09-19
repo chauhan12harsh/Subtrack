@@ -9,12 +9,9 @@ cd Server
 dotnet restore
 dotnet build
 
-Update-Database -Project Authentication -StartupProject Authentication
-Update-Database -Project Subscriptions -StartupProject Subscriptions
-Update-Database -Project Payments -StartupProject Payments
-Update-Database -Project Notifications -StartupProject Notifications
+Update-Database -Project Server -StartupProject Server.csproj
 
-./run-all.ps1
+dotnet run --launch-profile https
 
 cd ..
 

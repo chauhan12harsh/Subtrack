@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { notificationService } from "../Services/Notification/notificationService";
+import { notificationService } from "../Services/notificationService";
 
 const Sidebar = () => {
     

@@ -1,7 +1,0 @@
-<Solution>
-  <Project Path="Authentication\Authentication.csproj" />
-  <Project Path="Notifications/Notifications.csproj" Id="ad9ba08d-e7fd-4b28-9fdf-ea04faa911c9" />
-  <Project Path="Payments/Payments.csproj" />
-  <Project Path="RenewalWorker/RenewalWorker.csproj" Id="e9ecbb4b-c051-49ae-83c2-00ac170a16ec" />
-  <Project Path="Subscriptions/Subscriptions.csproj" />
-</Solution>

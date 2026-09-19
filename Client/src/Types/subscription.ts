@@ -1,4 +1,4 @@
-export interface subscription{
+export interface Subscription{
     Name : string;
     Amount: number;
     BillingCycle: string;
@@ -6,12 +6,14 @@ export interface subscription{
     Category: string;
 }
 
+export type SubscriptionStatus = "Active" | "Paused" | "Cancelled";
+
 export interface SubscriptionDto {
   id: string;
   name: string;
   amount: number;
   billingCycle: string;
-  status: string;
+  status: SubscriptionStatus;
   nextBillingDate: string;
   category: string;
 }

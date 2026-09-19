@@ -1,27 +1,65 @@
 import { useEffect, useState } from "react";
-import { subscriptionService } from "../Services/Subscription/subscriptionService";
+
+import { subscriptionService } from "../Services/subscriptionService";
+import { paymentService } from "../Services/paymentService";
 
 import SubscriptionModal from "./Subscription/SubscriptionModal";
 import EditSubscriptionModal from "./Subscription/EditSubscriptionModal";
-import { paymentService } from "../Services/Payment/paymentService";
+import SubscriptionCard from "./Subscription/SubscriptionCard";
+import Alert from "./Alert";
+
 import type { CreatePayment } from "../Types/payment";
+import type { SubscriptionDto } from "../Types/subscription";
+
+type AlertType = "success" | "error" | "warning" | "info";
+
+interface AlertState {
+  type: AlertType;
+  title: string;
+  message: string;
+}
 
 const Subscription = () => {
-  const [subscriptions, setSubscriptions] = useState<any[]>([]);
+  const [subscriptions, setSubscriptions] = useState<SubscriptionDto[]>([]);
+
   const [loading, setLoading] = useState(false);
+  const [processingId, setProcessingId] = useState<string | null>(null);
+
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [selectedSubscription, setSelectedSubscription] = useState<any>(null);
+
+  const [selectedSubscription, setSelectedSubscription] =
+    useState<SubscriptionDto | null>(null);
+
+  const [alert, setAlert] = useState<AlertState | null>(null);
+
+  const showAlert = (
+    type: AlertType,
+    title: string,
+    message: string
+  ) => {
+    setAlert({
+      type,
+      title,
+      message,
+    });
+  };
 
   const loadSubscriptions = async () => {
     try {
-
       setLoading(true);
-      const data = await subscriptionService.userSubscriptions();
-      setSubscriptions(data);
 
+      const data = await subscriptionService.userSubscriptions();
+
+      setSubscriptions(data);
     } catch (error) {
       console.error(error);
+
+      showAlert(
+        "error",
+        "Unable to Load",
+        "Something went wrong while loading your subscriptions."
+      );
     } finally {
       setLoading(false);
     }
@@ -33,21 +71,71 @@ const Subscription = () => {
 
   const handlePause = async (id: string) => {
     try {
+      setProcessingId(id);
+
       await subscriptionService.pauseSubscription(id);
 
-      await loadSubscriptions();
+      setSubscriptions((prev) =>
+        prev.map((subscription) =>
+          subscription.id === id
+            ? {
+                ...subscription,
+                status: "Paused",
+              }
+            : subscription
+        )
+      );
+
+      showAlert(
+        "success",
+        "Subscription Paused",
+        "Your subscription has been paused successfully."
+      );
     } catch (error) {
       console.error(error);
+
+      showAlert(
+        "error",
+        "Pause Failed",
+        "Unable to pause the subscription. Please try again."
+      );
+    } finally {
+      setProcessingId(null);
     }
   };
 
   const handleActivate = async (id: string) => {
     try {
+      setProcessingId(id);
+
       await subscriptionService.activateSubscription(id);
 
-      await loadSubscriptions();
+      setSubscriptions((prev) =>
+        prev.map((subscription) =>
+          subscription.id === id
+            ? {
+                ...subscription,
+                status: "Active",
+              }
+            : subscription
+        )
+      );
+
+      showAlert(
+        "success",
+        "Subscription Resumed",
+        "Your subscription has been activated successfully."
+      );
     } catch (error) {
       console.error(error);
+
+      showAlert(
+        "error",
+        "Resume Failed",
+        "Unable to resume the subscription. Please try again."
+      );
+    } finally {
+      setProcessingId(null);
     }
   };
 
@@ -56,42 +144,105 @@ const Subscription = () => {
       "Are you sure you want to cancel this subscription?"
     );
 
-    if (!confirmed) return;
+    if (!confirmed) {
+      return;
+    }
 
     try {
+      setProcessingId(id);
+
       await subscriptionService.cancelSubscription(id);
 
       setSubscriptions((prev) =>
         prev.filter((subscription) => subscription.id !== id)
       );
+
+      showAlert(
+        "success",
+        "Subscription Cancelled",
+        "The subscription has been cancelled successfully."
+      );
     } catch (error) {
       console.error(error);
+
+      showAlert(
+        "error",
+        "Cancellation Failed",
+        "Unable to cancel the subscription. Please try again."
+      );
+    } finally {
+      setProcessingId(null);
     }
   };
 
-  const handlePayment = async (payment: CreatePayment) => {
+  const handlePayment = async (
+    subscriptionId: string,
+    amount: number
+  ) => {
     try {
+      setProcessingId(subscriptionId);
+
+      const payment: CreatePayment = {
+        subscriptionId,
+        Amount: amount,
+      };
+
       await paymentService.createPayment(payment);
-      alert("Payment processed.");
+
+      showAlert(
+        "success",
+        "Payment Successful",
+        "Your payment has been processed successfully."
+      );
     } catch (error) {
       console.error(error);
+
+      showAlert(
+        "error",
+        "Payment Failed",
+        "Unable to process the payment. Please try again."
+      );
+    } finally {
+      setProcessingId(null);
     }
+  };
+
+  const handleEdit = (subscription: SubscriptionDto) => {
+    setSelectedSubscription(subscription);
+    setShowEditModal(true);
+  };
+
+  const handleCloseEdit = () => {
+    setShowEditModal(false);
+    setSelectedSubscription(null);
   };
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-40">
-        <h2 className="text-lg font-semibold">Loading...</h2>
+        <h2 className="text-lg font-semibold">
+          Loading...
+        </h2>
       </div>
     );
   }
 
   return (
     <div className="p-6">
-      {/* Header */}
+      {alert && (
+        <Alert
+          type={alert.type}
+          title={alert.title}
+          message={alert.message}
+          onClose={() => setAlert(null)}
+        />
+      )}
 
+      {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Subscriptions</h1>
+        <h1 className="text-3xl font-bold">
+          Subscriptions
+        </h1>
 
         <button
           onClick={() => setShowCreateModal(true)}
@@ -102,126 +253,96 @@ const Subscription = () => {
       </div>
 
       {/* Create Modal */}
-
       {showCreateModal && (
         <SubscriptionModal
           onClose={() => setShowCreateModal(false)}
           onSave={async (data) => {
-            await subscriptionService.create(data);
-            await loadSubscriptions();
-            setShowCreateModal(false);
+            try {
+              await subscriptionService.create(data);
+
+              await loadSubscriptions();
+
+              setShowCreateModal(false);
+
+              showAlert(
+                "success",
+                "Subscription Created",
+                "Your subscription has been created successfully."
+              );
+            } catch (error) {
+              console.error(error);
+
+              showAlert(
+                "error",
+                "Creation Failed",
+                "Unable to create the subscription."
+              );
+            }
           }}
         />
       )}
 
       {/* Edit Modal */}
-
       {showEditModal && selectedSubscription && (
         <EditSubscriptionModal
           subscription={selectedSubscription}
-          onClose={() => {
-            setShowEditModal(false);
-            setSelectedSubscription(null);
-          }}
+          onClose={handleCloseEdit}
           onSave={async (data) => {
-            await subscriptionService.updateSubscription(
-              data,
-              selectedSubscription.id
-            );
+            try {
+              await subscriptionService.updateSubscription(
+                data,
+                selectedSubscription.id
+              );
 
-            await loadSubscriptions();
+              await loadSubscriptions();
 
-            setShowEditModal(false);
-            setSelectedSubscription(null);
+              handleCloseEdit();
+
+              showAlert(
+                "success",
+                "Subscription Updated",
+                "Your subscription has been updated successfully."
+              );
+            } catch (error) {
+              console.error(error);
+
+              showAlert(
+                "error",
+                "Update Failed",
+                "Unable to update the subscription."
+              );
+            }
           }}
         />
       )}
 
-      {/* Subscription Cards */}
+      {/* Subscriptions */}
+      {subscriptions.length === 0 ? (
+        <div className="text-center py-12">
+          <h2 className="text-xl font-semibold">
+            No subscriptions found
+          </h2>
 
-      <div className="pr-2">
+          <p className="mt-2 text-gray-500">
+            Add your first subscription to get started.
+          </p>
+        </div>
+      ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {subscriptions.map((subscription) => (
-            <div
+            <SubscriptionCard
               key={subscription.id}
-              className="bg-white p-5 rounded-xl shadow hover:shadow-lg transition duration-200"
-            >
-              <h2 className="text-xl font-semibold">{subscription.name}</h2>
-
-              <p className="mt-2 text-lg font-medium">₹ {subscription.amount}</p>
-
-              <p className="text-gray-600">{subscription.billingCycle}</p>
-
-              <p className="text-gray-600">{subscription.category}</p>
-
-              <p className="mt-2"> 
-                Next Billing:{" "}{new Date(subscription.nextBillingDate).toLocaleDateString()}
-              </p>
-
-              <div className="mt-3">
-                <span
-                  className={`px-3 py-1 text-sm rounded-full font-medium
-                    ${
-                      subscription.status === "Active"
-                        ? "bg-green-100 text-green-700"
-                        : subscription.status === "Paused"
-                        ? "bg-yellow-100 text-yellow-700"
-                        : "bg-red-100 text-red-700"
-                    }`}
-                >
-                  {subscription.status}
-                </span>
-              </div>
-
-              {/* Actions */}
-
-              <div className="flex gap-2 mt-5 flex-wrap">
-                {subscription.status === "Active" && (
-                  <button
-                    onClick={() => handlePause(subscription.id)}
-                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded cursor-pointer"
-                  >
-                    Pause
-                  </button>
-                )}
-
-                {subscription.status === "Paused" && (
-                  <button
-                    onClick={() => handleActivate(subscription.id)}
-                    className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded cursor-pointer"
-                  >
-                    Resume
-                  </button>
-                )}
-
-                <button
-                  onClick={() => {
-                    setSelectedSubscription(subscription);
-                    setShowEditModal(true);
-                  }}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded cursor-pointer"
-                >
-                  Edit
-                </button>
-
-                <button
-                  onClick={() => handleCancel(subscription.id)}
-                  className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded cursor-pointer"
-                >
-                  Cancel
-                </button>
-
-                <button
-                  onClick={() => handlePayment({subscriptionId: subscription.id, Amount: subscription.amount })}
-                  className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded cursor-pointer"
-                >
-                  Pay
-                </button>
-              </div>
-            </div>
+              subscription={subscription}
+              onPause={handlePause}
+              onActivate={handleActivate}
+              onEdit={handleEdit}
+              onCancel={handleCancel}
+              onPayment={handlePayment}
+              processingId={processingId}
+            />
           ))}
         </div>
-      </div>
+      )}
     </div>
   );
 };

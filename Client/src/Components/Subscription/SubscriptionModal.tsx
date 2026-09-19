@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { subscriptionService } from "../../Services/Subscription/subscriptionService";
+import { subscriptionService } from "../../Services/subscriptionService";
 
 interface Props {
   onClose: () => void;

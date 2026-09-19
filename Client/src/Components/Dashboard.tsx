@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { paymentService } from "../Services/Payment/paymentService";
-import { subscriptionService } from "../Services/Subscription/subscriptionService";
+import { paymentService } from "../Services/paymentService";
+import { subscriptionService } from "../Services/subscriptionService";
 
 const Dashboard = () => {
   const [subscriptions, setSubscriptions] = useState<any[]>([]);
