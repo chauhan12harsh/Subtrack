@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { paymentService } from "../Services/paymentService";
-import type { Payment } from "../Types/payment";
+import type { PaymentType } from "../Types/payment";
 import type { AlertState, AlertType } from "../Types/Alert"
 import Alert from "./Alert";
 
 const Payment = () => {
-  const [payments, setPayments] = useState<Payment[]>([]);
+  const [payments, setPayments] = useState<PaymentType[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [alert, setAlert] = useState<AlertState | null>(null);

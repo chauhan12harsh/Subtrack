@@ -3,7 +3,7 @@ export interface CreatePayment{
     Amount: number;
 }
 
-export interface Payment {
+export interface PaymentType {
   id: string;
   transactionReference: string;
   amount: number;
