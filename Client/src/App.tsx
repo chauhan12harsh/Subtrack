@@ -4,9 +4,10 @@ import Register from "./Pages/Register"
 import DashboardLayout from "./Layouts/DashboardLayout"
 import Dashboard from "./Components/Dashboard"
 import Subscription from "./Components/Subscription"
-import Payment from "./Components/Payment"
 import Budget from "./Components/Budget"
 import Notifications from "./Components/Notification"
+import Profile from "./Components/Profile"
+import Payment from "./Components/Payment"
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
           <Route path="/payments" element={<Payment />} />
           <Route path="/budget" element={<Budget/>} />
           <Route path="/notifications" element={<Notifications/>} />
+          <Route path="/profile" element={<Profile/>} />
         </Route>
       </Routes>
     </BrowserRouter>

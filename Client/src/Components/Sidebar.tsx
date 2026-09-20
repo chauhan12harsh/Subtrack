@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { notificationService } from "../Services/notificationService";
 
 const Sidebar = () => {
-    
   const navigator = useNavigate();
 
   const menuItems = [
@@ -30,21 +29,18 @@ const Sidebar = () => {
   ];
 
   const [unreadCount, setUnreadCount] = useState(0);
-  
+
   const logout = () => {
     localStorage.removeItem("accessToken");
     navigator("/");
-  }
+  };
 
   const loadUnreadCount = async () => {
     try {
       const count = await notificationService.GetUnreadNotificationCount();
       setUnreadCount(count);
       console.log(count);
-      
-      
-    }
-    catch (error) {
+    } catch (error) {
       console.error(error);
     }
   };
@@ -53,18 +49,15 @@ const Sidebar = () => {
     loadUnreadCount();
 
     const intervalId = setInterval(() => {
-                          loadUnreadCount();
-                        }, 5000); // 30 seconds
+      loadUnreadCount();
+    }, 5000); // 30 seconds
 
     return () => clearInterval(intervalId);
-
   }, []);
 
   return (
     <aside className="w-64 h-screen bg-slate-900 text-white p-5">
-      <h1 className="text-2xl font-bold mb-10">
-        SubTrack
-      </h1>
+      <h1 className="text-2xl font-bold mb-10">SubTrack</h1>
 
       <nav>
         <ul className="space-y-3">
@@ -80,21 +73,30 @@ const Sidebar = () => {
               >
                 {/* {item.name} */}
                 <div className="flex items-center justify-between">
-                  <span>{item.name}</span>                  
-                  {
-                    item.name === "Notifications" && unreadCount > 0 && 
-                    ( 
-                      <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full min-w-[24px] text-center">
-                        {unreadCount}
-                      </span>
-                    )
-                  }
+                  <span>{item.name}</span>
+                  {item.name === "Notifications" && unreadCount > 0 && (
+                    <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full min-w-[24px] text-center">
+                      {unreadCount}
+                    </span>
+                  )}
                 </div>
               </Link>
             </li>
           ))}
         </ul>
       </nav>
+
+      <div className="bottom-20 left-5">
+        <Link
+          to="/profile"
+          className={`block p-3 rounded-lg transition ${"hover:bg-slate-800"}`}
+        >
+          {/* {item.name} */}
+          <div className="flex items-center justify-between">
+            <span>Profile</span>
+          </div>
+        </Link>
+      </div>
 
       <div className="absolute bottom-5 left-5">
         <button

@@ -9,6 +9,7 @@ cd Server
 dotnet restore
 dotnet build
 
+# this command will be run from package manager console inside visual studio
 Update-Database -Project Server -StartupProject Server.csproj
 
 dotnet run --launch-profile https

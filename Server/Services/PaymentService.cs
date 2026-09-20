@@ -1,12 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SubTrack.Authentication.Exceptions;
 using SubTrack.Data;
+using SubTrack.Dtos.Notification;
 using SubTrack.Dtos.Payment;
 using SubTrack.Exceptions;
+using SubTrack.Notifications.Enums;
 using SubTrack.Notifications.Interfaces;
 using SubTrack.Payments.Entities;
 using SubTrack.Payments.Enums;
 using SubTrack.Payments.Interfaces;
+using SubTrack.Subscriptions.Entities;
 using SubTrack.Subscriptions.Interfaces;
 
 namespace SubTrack.Payments.Services
@@ -41,6 +44,9 @@ namespace SubTrack.Payments.Services
                 TransactionReference = $"TXN{Guid.NewGuid():N}"
             };
 
+            // Subscription Details
+            var subscription = await subscriptionService.GetSubscription(processPaymentDto.SubscriptionId, userId);
+
             if (paymentStatus == PaymentStatus.Completed)
             {
 
@@ -51,10 +57,30 @@ namespace SubTrack.Payments.Services
                 await subscriptionService.RenewSubscription(processPaymentDto.SubscriptionId);
 
 
-                //// Create notification
-                //string title = "";
-                //string message = "";
-                //await notificationService.CreateNotification(new createNotificationDto{ userId, title,message, NotificationType.PaymentSuccess});
+                // Create notification                
+                string title = "Payment Successful";
+                string message = $"Your payment for {subscription.Name} was completed successfully.";
+                await notificationService.CreateNotification(new CreateNotificationDto
+                {
+                    UserId = userId,
+                    Title = title,
+                    Message = message,
+                    Type = NotificationType.PaymentSuccess
+                });
+            }
+            else {
+
+                // Create notification              
+                string title = "Payment Failed";
+                string message = $"Your payment for {subscription.Name}  could not be completed.";
+                await notificationService.CreateNotification(new CreateNotificationDto
+                {
+                    UserId = userId,
+                    Title = title,
+                    Message = message,
+                    Type = NotificationType.PaymentSuccess
+                });
+
             }
 
             context.Payment.Add(payment);
@@ -66,7 +92,7 @@ namespace SubTrack.Payments.Services
                 Status = payment.Status,
                 TransactionReference = payment.TransactionReference,
                 Amount = payment.Amount,
-                SubscriptionId = payment.SubscriptionId
+                SubscriptionId = payment.SubscriptionId                
             };
 
             return paymentResponseDto;

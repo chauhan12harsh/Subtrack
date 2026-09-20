@@ -1,22 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { paymentService } from "../Services/paymentService";
+import type { Payment } from "../Types/payment";
+import type { AlertState, AlertType } from "../Types/Alert"
 import Alert from "./Alert";
-
-interface Payment {
-  id: string;
-  transactionReference: string;
-  amount: number;
-  paymentDate: string | null;
-  status: string;
-}
-
-type AlertType = "success" | "error" | "warning" | "info";
-
-interface AlertState {
-  type: AlertType;
-  title: string;
-  message: string;
-}
 
 const Payment = () => {
   const [payments, setPayments] = useState<Payment[]>([]);
@@ -27,16 +13,8 @@ const Payment = () => {
   // Prevent multiple API requests from running at the same time.
   const isFetching = useRef(false);
 
-  const showAlert = (
-    type: AlertType,
-    title: string,
-    message: string
-  ) => {
-    setAlert({
-      type,
-      title,
-      message,
-    });
+  const showAlert = (type: AlertType, title: string, message: string) => {
+    setAlert({ type,  title,  message });
   };
 
   /**
@@ -102,8 +80,7 @@ const Payment = () => {
    * isPolling tells us whether this is a background refresh.
    * Background refresh should not replace the entire page with Loading...
    */
-  const loadPayments = useCallback(
-    async (isPolling = false) => {
+  const loadPayments = useCallback( async (isPolling = false) => {
       if (isFetching.current) {
         return;
       }
@@ -135,9 +112,7 @@ const Payment = () => {
         setLoading(false);
         setRefreshing(false);
       }
-    },
-    []
-  );
+    },[]);
 
   useEffect(() => {
     // Initial load
@@ -231,7 +206,7 @@ const Payment = () => {
         <div className="bg-white rounded-xl shadow overflow-hidden">
           {/* Responsive table */}
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[650px]">
+            <table className="w-full ">
               <thead className="bg-slate-100">
                 <tr>
                   <th className="text-left p-4 font-semibold text-gray-700">

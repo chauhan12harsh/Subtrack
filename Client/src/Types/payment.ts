@@ -7,8 +7,7 @@ export interface Payment {
   id: string;
   transactionReference: string;
   amount: number;
-  paymentDate: string;
-  status: string;
-  subscriptionId: string;
-  userId: string;
+  paymentDate: string | null;
+  status: string;  
+  SubscriptionName: string;  
 }

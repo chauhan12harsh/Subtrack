@@ -12,7 +12,7 @@ namespace SubTrack.Dtos.Payment
 
         public decimal Amount { get; set; }
 
-        public Guid SubscriptionId { get; set; }
+        public Guid SubscriptionId { get; set; }        
 
         public DateTime PaymentDate { get; set; }
 
