@@ -1,15 +1,15 @@
 import { ApiClient } from "./BaseApi";
-import type { subscription } from "../Types/subscription"
+import type { Subscription } from "../Types/subscription"
 
 export const subscriptionService = {
     
-    create: async (data: subscription) => {
+    create: async (data: Subscription) => {
         const response = await ApiClient.post("/subscription/create", data);
 
         return response.data;
     },
 
-    updateSubscription: async (data: subscription, subscriptionId:string) => {
+    updateSubscription: async (data: Subscription, subscriptionId:string) => {
         const response = await ApiClient.patch(`/subscription/update/${subscriptionId}`, data);
         
         return response.data;

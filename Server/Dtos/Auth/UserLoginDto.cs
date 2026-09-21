@@ -1,8 +1,16 @@
-﻿namespace SubTrack.Dtos.Auth
+﻿using Server.Attributes;
+using System.ComponentModel.DataAnnotations;
+
+namespace SubTrack.Dtos.Auth
 {
     public class UserLoginDto
     {
-        public required string Email { get; set; }
+        [Required]
+        [EmailOrUser]
+        public required string EmailOrUsername { get; set; }
+
+        [Required]
+        [StringLength(100, MinimumLength = 8)]
         public required string Password { get; set; }
 
     }

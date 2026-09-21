@@ -1,11 +1,20 @@
-﻿namespace SubTrack.Dtos.Auth
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SubTrack.Dtos.Auth
 {
     public class UserRegisterDto
     {
+        [Required]
+        [StringLength(50,MinimumLength = 5)]
         public string Username { get; set; } = string.Empty;
+
+        [Required]
+        [EmailAddress]
         public required string Email { get; set; } = string.Empty;
-        public required string Password { get; set; } = string.Empty;
-        public decimal Balance { get; set; } = 0m;
+
+        [Required]
+        [StringLength(100, MinimumLength = 8)]
+        public required string Password { get; set; } = string.Empty;        
     }   
 }
     

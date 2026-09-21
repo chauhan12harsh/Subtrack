@@ -30,8 +30,7 @@ namespace SubTrack.Authentication.Services
             var newUser = new User
             {
                 Username = userRegisterDto.Username,
-                Email = userRegisterDto.Email,
-                Balance = userRegisterDto.Balance,
+                Email = userRegisterDto.Email,                
                 Role = UserRole.User
             };
 
@@ -54,7 +53,8 @@ namespace SubTrack.Authentication.Services
 
         public async Task<TokenResponseDto> AuthenticateUser(UserLoginDto userLoginDto)
         {
-            var user = await context.User.FirstOrDefaultAsync(u => u.Email == userLoginDto.Email);
+            var user = await context.User
+                .FirstOrDefaultAsync(u => u.Email == userLoginDto.EmailOrUsername || u.Username == userLoginDto.EmailOrUsername);
 
             if (user is null)
             {

@@ -5,7 +5,7 @@ import {authService} from "../Services/authService";
 const Login = () => {
   const navigate = useNavigate();
 
-  const [email, setemail] = useState("");
+  const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const [error, setError] = useState("");
@@ -17,11 +17,11 @@ const Login = () => {
         setIsLoading(true);
         setError("");
 
-        const response = await authService.login({email,password});
+        const response = await authService.login({emailOrUsername,password});
         
         localStorage.setItem("accessToken", response.token);
 
-        setemail("");
+        setEmailOrUsername("");
         setPassword("");
         
         navigate("/dashboard");
@@ -50,8 +50,8 @@ const Login = () => {
 
             <input
               type="text"
-              value={email}
-              onChange={(e) => setemail(e.target.value)}
+              value={emailOrUsername}
+              onChange={(e) => setEmailOrUsername(e.target.value)}
               placeholder="Enter email"
               className="w-full border rounded-lg p-3"
             />
