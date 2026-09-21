@@ -2,7 +2,7 @@
 
 namespace Server.Attributes
 {
-    public class EmailOrUserAttribute: ValidationAttribute
+    public class EmailOrUsernameAttribute: ValidationAttribute
     {
 
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
@@ -25,8 +25,8 @@ namespace Server.Attributes
             else {
 
                 // validate username
-                if (inputIdentifier.Length < 8) {
-                    return new ValidationResult("Username must be at least 3 characters long.");
+                if (inputIdentifier.Length < 5) {
+                    return new ValidationResult("Username must be at least 5 characters long.");
                 }
             }
 

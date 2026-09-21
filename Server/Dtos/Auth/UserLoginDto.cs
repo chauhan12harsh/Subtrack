@@ -6,7 +6,7 @@ namespace SubTrack.Dtos.Auth
     public class UserLoginDto
     {
         [Required]
-        [EmailOrUser]
+        [EmailOrUsernameAttribute]
         public required string EmailOrUsername { get; set; }
 
         [Required]
