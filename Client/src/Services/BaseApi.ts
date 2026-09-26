@@ -1,7 +1,6 @@
 import axios from "axios";
 
-// Spring Boot defaults to port 8080. Override with VITE_API_URL when needed.
-const baseURL = import.meta.env.VITE_API_URL || "http://localhost:8080";
+const baseURL = import.meta.env.VITE_API_URL || "http://localhost:7136";
 
 export const ApiClient = axios.create({
   baseURL: baseURL.endsWith("/") ? baseURL : `${baseURL}/`,
