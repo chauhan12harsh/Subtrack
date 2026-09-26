@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
+import com.subtrack.enums.PaymentStatus;
+
 @Entity
 @Table(name = "Payment")
 public class Payment {

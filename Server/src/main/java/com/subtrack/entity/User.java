@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
+import com.subtrack.enums.UserRole;
+
 @Entity
 @Table(name = "User", uniqueConstraints = {
     @UniqueConstraint(name = "uk_user_email", columnNames = "email"),

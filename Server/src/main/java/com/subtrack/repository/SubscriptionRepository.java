@@ -1,1 +1,11 @@
-package com.subtrack.repository; import com.subtrack.entity.Subscription; import org.springframework.data.jpa.repository.JpaRepository; import java.util.*; public interface SubscriptionRepository extends JpaRepository<Subscription,UUID>{List<Subscription> findByUserId(UUID userId); Optional<Subscription> findByIdAndUserId(UUID id,UUID userId);}
+package com.subtrack.repository;
+
+import com.subtrack.entity.Subscription;
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.*;
+
+public interface SubscriptionRepository extends JpaRepository<Subscription, UUID> {
+    List<Subscription> findByUserId(UUID userId);
+
+    Optional<Subscription> findByIdAndUserId(UUID id, UUID userId);
+}

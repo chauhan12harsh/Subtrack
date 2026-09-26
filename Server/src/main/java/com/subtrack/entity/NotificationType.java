@@ -1,1 +1,0 @@
-package com.subtrack.entity; public enum NotificationType { PaymentSuccess, PaymentFailed, SubscriptionRenewed, SubscriptionPaused, SubscriptionCancelled, General }

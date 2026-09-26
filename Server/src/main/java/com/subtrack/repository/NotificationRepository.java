@@ -1,1 +1,11 @@
-package com.subtrack.repository; import com.subtrack.entity.Notification; import org.springframework.data.jpa.repository.JpaRepository; import java.util.*; public interface NotificationRepository extends JpaRepository<Notification,UUID>{List<Notification> findByUserIdOrderByCreatedAtDesc(UUID userId); Optional<Notification> findByIdAndUserId(UUID id,UUID userId);}
+package com.subtrack.repository;
+
+import com.subtrack.entity.Notification;
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.*;
+
+public interface NotificationRepository extends JpaRepository<Notification, UUID> {
+    List<Notification> findByUserIdOrderByCreatedAtDesc(UUID userId);
+
+    Optional<Notification> findByIdAndUserId(UUID id, UUID userId);
+}
