@@ -35,8 +35,10 @@ public class AuthController {
     public AuthDtos.Token login(@Valid @RequestBody AuthDtos.Login r) {
         User u = users.findByEmailIgnoreCaseOrUsernameIgnoreCase(r.emailOrUsername(), r.emailOrUsername())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials"));
+
         if (!encoder.matches(r.password(), u.getPasswordHash()))
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
+
         return new AuthDtos.Token(jwt.create(u.getId().toString(), u.getRole().name()));
     }
 

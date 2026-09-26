@@ -8,7 +8,7 @@ import java.util.UUID;
 import com.subtrack.enums.UserRole;
 
 @Entity
-@Table(name = "User", uniqueConstraints = {
+@Table(name = "app_users", uniqueConstraints = {
     @UniqueConstraint(name = "uk_user_email", columnNames = "email"),
     @UniqueConstraint(name = "uk_user_username", columnNames = "username")
 })
