@@ -1,0 +1,265 @@
+%PDF-1.4
+%SubTrack Java Docs
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R 5 0 R 7 0 R 9 0 R] /Count 4 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 7 0 R /F2 8 0 R >> >> /Contents 4 0 R >>
+endobj
+4 0 obj
+<< /Length 2038 >>
+stream
+BT
+/F1 9 Tf
+48 752 Td
+13 TL
+/F2 15 Tf
+(SUBTRACK | JAVA DOCUMENTATION) Tj
+T*
+/F1 9 Tf
+(Master branch | Java 21 | Spring Boot 3.5 | MySQL | React + TypeScript) Tj
+T*
+() Tj
+T*
+/F2 10 Tf
+(OVERVIEW) Tj
+T*
+(SubTrack tracks recurring subscriptions, billing dates, payment activity, account balance, and) Tj
+T*
+(notifications. This PDF documents the Java migration on master. Main is not modified.) Tj
+T*
+(Current Java features: registration/login, BCrypt password hashing, JWT creation, subscription) Tj
+T*
+(CRUD/status, balance-backed payment recording, notifications, and health endpoint.) Tj
+T*
+(This is a migration baseline, not a production-ready payment or identity service.) Tj
+T*
+() Tj
+T*
+/F2 10 Tf
+(ARCHITECTURE AND STACK) Tj
+T*
+(React + TypeScript + Vite client -> HTTP/JSON -> Spring Boot REST API -> Spring Data JPA -> MySQL.) Tj
+T*
+(Backend: Java 21, Spring Boot 3.5.6, Spring Web, Spring Data JPA, Jakarta Validation, Spring) Tj
+T*
+(Security, Maven, Hibernate, MySQL Connector/J. Client: React, TypeScript, Vite, Axios, React Router,) Tj
+T*
+(React Hook Form, Tailwind CSS, Recharts.) Tj
+T*
+() Tj
+T*
+(Source layout: Client/ frontend; Server/pom.xml Maven build; Server/src/main/java/com/subtrack/) Tj
+T*
+(contains config, controller, dto, entity, repository, security; Server/src/main/resources contains) Tj
+T*
+(application properties; Documentation/ contains API and development notes.) Tj
+T*
+() Tj
+T*
+/F2 10 Tf
+(DOMAIN MODEL) Tj
+T*
+(User: UUID, username, email, BCrypt password hash, balance, created timestamp, role.) Tj
+T*
+(Subscription: user UUID, name, amount, category, billing cycle/status, next billing timestamp.) Tj
+T*
+(Payment: user/subscription UUIDs, amount, status, payment timestamp, unique transaction reference.) Tj
+T*
+(Notification: owner, title/message/type, read state and creation metadata.) Tj
+T*
+(Money uses BigDecimal; timestamps use Instant. Billing cycles: Monthly, Quarterly, HalfYearly, Yearly.) Tj
+T*
+(Subscription statuses: Active, Paused, Cancelled. Payment statuses: PENDING, SUCCESS, FAILED.) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 7 0 R /F2 8 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 1662 >>
+stream
+BT
+/F1 9 Tf
+48 752 Td
+13 TL
+/F2 15 Tf
+(LOCAL DEVELOPMENT) Tj
+T*
+/F1 9 Tf
+(Prerequisites: JDK 21, Maven 3.9+, MySQL 8-compatible server, Node.js/npm compatible with Vite.) Tj
+T*
+() Tj
+T*
+(Clone and select Java branch:) Tj
+T*
+(  git clone https://github.com/chauhan12harsh/Subtrack.git) Tj
+T*
+(  cd Subtrack) Tj
+T*
+(  git switch master) Tj
+T*
+() Tj
+T*
+(Create MySQL schema named subtrack or configure DB_URL. Hibernate ddl-auto=validate checks mappings) Tj
+T*
+(against an existing schema; it does not create or migrate tables. No Flyway/Liquibase migration is) Tj
+T*
+(currently included. Confirm schema mappings before startup.) Tj
+T*
+() Tj
+T*
+/F2 10 Tf
+(ENVIRONMENT VARIABLES) Tj
+T*
+(SERVER_PORT  HTTP port; default 8080) Tj
+T*
+(DB_URL       JDBC URL; default jdbc:mysql://localhost:3306/subtrack) Tj
+T*
+(DB_USERNAME  database user; default root) Tj
+T*
+(DB_PASSWORD  database password; default empty) Tj
+T*
+(JWT_SECRET   HS256 signing secret; minimum 32 characters for token creation) Tj
+T*
+(JWT_ISSUER   issuer claim; default subtrack) Tj
+T*
+(JWT_AUDIENCE configured default subtrack-client; currently not emitted or validated) Tj
+T*
+() Tj
+T*
+(Example \(use local values; never commit secrets\):) Tj
+T*
+(  export DB_URL='jdbc:mysql://localhost:3306/subtrack') Tj
+T*
+(  export DB_USERNAME='root') Tj
+T*
+(  export DB_PASSWORD='your-local-password') Tj
+T*
+(  export JWT_SECRET='replace-with-a-long-random-development-secret') Tj
+T*
+(  export SERVER_PORT=8080) Tj
+T*
+() Tj
+T*
+(Run backend: cd Server && mvn spring-boot:run) Tj
+T*
+(Run frontend in another terminal: cd Client && npm install && npm run dev) Tj
+T*
+(Health check: GET http://localhost:8080/health) Tj
+ET
+endstream
+endobj
+7 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+8 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 7 0 R /F2 8 0 R >> >> /Contents 10 0 R >>
+endobj
+10 0 obj
+<< /Length 2348 >>
+stream
+BT
+/F1 9 Tf
+48 752 Td
+13 TL
+/F2 15 Tf
+(SECURITY, PAYMENTS, ROADMAP) Tj
+T*
+/F2 10 Tf
+(SECURITY WARNING) Tj
+T*
+(JWT creation exists, but bearer-token verification is not implemented. Spring Security currently) Tj
+T*
+(permits requests. User-scoped endpoints trust caller-supplied X-User-Id, which can be spoofed.) Tj
+T*
+(Do not expose the API to untrusted networks. Implement JWT signature/expiry/issuer validation,) Tj
+T*
+(derive identity from authenticated principal, remove identity headers, configure CORS, and test access.) Tj
+T*
+() Tj
+T*
+/F2 10 Tf
+(IDEMPOTENCY LIMITATIONS) Tj
+T*
+(The payment key is saved as a unique transaction reference and duplicate lookup returns an existing) Tj
+T*
+(record. This is not fully concurrency-safe, does not verify same-key payload consistency, and has no) Tj
+T*
+(dedicated durable idempotency ledger. Do not process real money. A robust design needs a scoped unique) Tj
+T*
+(key, request fingerprint, persisted outcome, atomic payment/balance effects, locking or optimistic) Tj
+T*
+(concurrency, and integration tests for simultaneous retries.) Tj
+T*
+() Tj
+T*
+/F2 10 Tf
+(FRONTEND INTEGRATION) Tj
+T*
+(The client still has legacy API paths and a legacy base URL. Align routes, DTOs, token handling,) Tj
+T*
+(response/error contracts, and CORS before expecting end-to-end operation.) Tj
+T*
+() Tj
+T*
+(SUGGESTED CHECKS \(not verified as passing\)) Tj
+T*
+(Backend: cd Server && mvn test) Tj
+T*
+(Frontend: cd Client && npm ci && npm run lint && npm run build) Tj
+T*
+() Tj
+T*
+/F2 10 Tf
+(RELEASE CHECKLIST) Tj
+T*
+([ ] JWT verification and principal-based ownership; remove X-User-Id trust) Tj
+T*
+([ ] Versioned database migrations and reproducible schema setup) Tj
+T*
+([ ] Durable, payload-aware, concurrency-safe idempotency and balance consistency) Tj
+T*
+([ ] Align frontend routes/types and add contract/end-to-end tests) Tj
+T*
+([ ] Port required profile/password/account and billing behavior) Tj
+T*
+([ ] Unit, repository, API, security, DB integration, and concurrency tests) Tj
+T*
+([ ] OpenAPI, consistent errors, logging, secrets, CORS, deployment hardening, verified builds) Tj
+T*
+() Tj
+T*
+(Related repository docs: README.md, Documentation/API.md, Documentation/DEVELOPMENT.md,) Tj
+T*
+(Server/README.md. This PDF describes current master code and known gaps; it is not a production) Tj
+T*
+(readiness review.) Tj
+ET
+endstream
+endobj
+xref
+0 11
+0000000000 65535 f 
+0000000029 00000 n 
+0000000078 00000 n 
+0000000153 00000 n 
+0000000289 00000 n 
+0000002379 00000 n 
+0000002515 00000 n 
+0000004229 00000 n 
+0000004299 00000 n 
+0000004374 00000 n 
+0000004511 00000 n 
+trailer
+<< /Size 11 /Root 1 0 R >>
+startxref
+6912
+%%EOF
