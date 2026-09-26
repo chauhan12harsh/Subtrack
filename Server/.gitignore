@@ -4,8 +4,13 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### Appsettings ###
+# Ignore Spring Boot application properties
 application.properties
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
 
 ### STS ###
 .apt_generated
@@ -31,6 +36,8 @@ application.properties
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
+
+target/
 
 ### VS Code ###
 .vscode/
