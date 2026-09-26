@@ -225,6 +225,8 @@ These are suggested local checks; they have **not been reported as passing** for
 
 ## Documentation
 
+- [Java application documentation (PDF)](Documentation/SubTrack_Java_Documentation.pdf)
+
 - [API reference and examples](Documentation/API.md)
 - [Architecture, migration notes, and development roadmap](Documentation/DEVELOPMENT.md)
 - [Backend-specific notes](Server/README.md)
